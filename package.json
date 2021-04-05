@@ -1,0 +1,17 @@
+{
+  "name": "understanding_computation_by_typescript",
+  "version": "1.0.0",
+  "description": "計算機と一体化する",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "author": "iwtn",
+  "license": "ISC",
+  "dependencies": {
+    "typescript": "^4.2.3"
+  },
+  "devDependencies": {
+    "ts-node": "^9.1.1"
+  }
+}
