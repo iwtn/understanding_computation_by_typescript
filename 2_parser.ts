@@ -233,22 +233,26 @@ class Assign {
   }
 }
 
-let statement = new Assign('x', new Add(new Variable('x'), new Nmbr(1)))
-let env: object = { x: (new Nmbr(2)) }
-console.log(statement.isReducible())
-let result = statement.reduce(env)
-statement = result[0]
-env = result[1]
-console.log(statement.inspect())
-console.log(env)
-result = statement.reduce(env)
-statement = result[0]
-env = result[1]
-console.log(statement.inspect())
-console.log(env)
-result = statement.reduce(env)
-statement = result[0]
-env = result[1]
-console.log(statement.inspect())
-console.log(env)
-console.log(statement.isReducible())
+class StatementMachine {
+  constructor(public statement: any, public environment: object) {
+  }
+
+  step(): void {
+    const result = this.statement.reduce(this.environment)
+    this.statement = result[0]
+    this.environment = result[1]
+  }
+
+  run(): void {
+    while(this.statement.isReducible()) {
+      console.log(this.statement.inspect(), this.environment)
+      this.step()
+    }
+    console.log(this.statement.inspect(), this.environment)
+  }
+}
+
+(new StatementMachine(
+  new Assign('x', new Add(new Variable('x'), new Nmbr(1))),
+  { x: new Nmbr(2) }
+)).run()
