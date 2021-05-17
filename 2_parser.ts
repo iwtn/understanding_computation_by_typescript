@@ -1,5 +1,5 @@
 class Nmbr {
-  constructor(public value: number) {
+  constructor(public value: any) {
   }
 
   inspect(): string {
@@ -166,15 +166,15 @@ class LessThan extends Bool {
 (new Machine(new LessThan(new Nmbr(5), new Add(new Nmbr(2), new Nmbr(2))), {})).run()
 
 class Variable {
-  constructor(public name: string) {
+  constructor(public value: any) {
   }
 
   inspect(): string {
-    return `<<${this.name}>>`
+    return `<<${this.value}>>`
   }
 
   toString(): string {
-    return `${this.name}`
+    return `${this.value}`
   }
 
   isReducible() : boolean {
@@ -182,6 +182,8 @@ class Variable {
   }
 
   reduce(environment: object): any {
-    return environment[this.name]
+    return environment[this.value]
   }
 }
+
+(new Machine(new Add(new Variable('x'), new Variable('y')), { x: (new Nmbr(3)), y: (new Nmbr(4)) })).run()
