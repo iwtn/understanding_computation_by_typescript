@@ -14,7 +14,7 @@ class Nmbr {
     return false
   }
 
-  reduce(): any {
+  reduce(environment: object): any {
   }
 }
 
@@ -35,11 +35,11 @@ class Add extends Nmbr{
     return true
   }
 
-  reduce(): any {
+  reduce(environment: object): any {
     if (this.left.isReducible()) {
-      return new Add(this.left.reduce(), this.right)
+      return new Add(this.left.reduce(environment), this.right)
     } else if (this.right.isReducible()) {
-      return new Add(this.left, this.right.reduce())
+      return new Add(this.left, this.right.reduce(environment))
     } else {
       return new Nmbr(this.left.value + this.right.value)
     }
@@ -63,11 +63,11 @@ class Multiply extends Nmbr {
     return true
   }
 
-  reduce(): any {
+  reduce(environment): any {
     if (this.left.isReducible()) {
-      return new Multiply(this.left.reduce(), this.right)
+      return new Multiply(this.left.reduce(environment), this.right)
     } else if (this.right.isReducible()) {
-      return new Multiply(this.left, this.right.reduce())
+      return new Multiply(this.left, this.right.reduce(environment))
     } else {
       return new Nmbr(this.left.value * this.right.value)
     }
@@ -81,6 +81,7 @@ console.log(new Nmbr(5).inspect())
 console.log((new Nmbr(1)).isReducible())
 console.log(add.isReducible())
 
+/*
 let expression = new Add(new Multiply(new Nmbr(1), new Nmbr(2)), new Multiply(new Nmbr(3), new Nmbr(4)))
 console.log(expression.inspect())
 console.log(expression.isReducible())
@@ -93,13 +94,14 @@ console.log(expression.isReducible())
 expression = expression.reduce()
 console.log(expression.inspect())
 console.log(expression.isReducible())
+*/
 
 class Machine {
-  constructor(public expression: any) {
+  constructor(public expression: any, public environment: object) {
   }
 
   step(): void {
-    this.expression = this.expression.reduce()
+    this.expression = this.expression.reduce(this.environment)
   }
 
   run(): void {
@@ -111,7 +113,7 @@ class Machine {
   }
 }
 
-(new Machine(new Add(new Multiply(new Nmbr(1), new Nmbr(2)), new Multiply(new Nmbr(3), new Nmbr(4))))).run()
+(new Machine(new Add(new Multiply(new Nmbr(1), new Nmbr(2)), new Multiply(new Nmbr(3), new Nmbr(4))), {})).run()
 
 class Bool {
   constructor(public value: boolean) {
@@ -129,7 +131,7 @@ class Bool {
     return false
   }
 
-  reduce(): any {
+  reduce(environment: object): any {
   }
 }
 
@@ -150,15 +152,36 @@ class LessThan extends Bool {
     return true
   }
 
-  reduce(): any {
+  reduce(environment: object): any {
     if (this.left.isReducible()) {
-      return new LessThan(this.left.reduce(), this.right)
+      return new LessThan(this.left.reduce(environment), this.right)
     } else if (this.right.isReducible()) {
-      return new LessThan(this.left, this.right.reduce())
+      return new LessThan(this.left, this.right.reduce(environment))
     } else {
       return new Bool(this.left.value < this.right.value)
     }
   }
 }
 
-(new Machine(new LessThan(new Nmbr(5), new Add(new Nmbr(2), new Nmbr(2))))).run()
+(new Machine(new LessThan(new Nmbr(5), new Add(new Nmbr(2), new Nmbr(2))), {})).run()
+
+class Variable {
+  constructor(public name: string) {
+  }
+
+  inspect(): string {
+    return `<<${this.name}>>`
+  }
+
+  toString(): string {
+    return `${this.name}`
+  }
+
+  isReducible() : boolean {
+    return true
+  }
+
+  reduce(environment: object): any {
+    return environment[this.name]
+  }
+}
