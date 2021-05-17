@@ -63,7 +63,7 @@ class Multiply extends Nmbr {
     return true
   }
 
-  reduce(environment): any {
+  reduce(environment: object): any {
     if (this.left.isReducible()) {
       return new Multiply(this.left.reduce(environment), this.right)
     } else if (this.right.isReducible()) {
@@ -187,3 +187,68 @@ class Variable {
 }
 
 (new Machine(new Add(new Variable('x'), new Variable('y')), { x: (new Nmbr(3)), y: (new Nmbr(4)) })).run()
+
+class DoNothing {
+  inspect(): string {
+    return `<<${this}>>`
+  }
+
+  toString(): string {
+    return 'do-nothing'
+  }
+
+  isReducible() : boolean {
+    return false
+  }
+
+  equal(otherStatement: any): boolean {
+    return otherStatement.instanceof(DoNothing)
+  }
+}
+
+class Assign {
+  constructor(public name: any, public expression: any) {
+  }
+
+  inspect(): string {
+    return `<<${this}>>`
+  }
+
+  toString(): string {
+    return `${this.name} = ${this.expression}`
+  }
+
+  isReducible() : boolean {
+    return true
+  }
+
+  reduce(environment: object): any {
+    if (this.expression.isReducible()) {
+      return [new Assign(this.name, this.expression.reduce(environment)), environment]
+    } else {
+      const addEnv: object = {}
+      addEnv[this.name] = this.expression
+      return [new DoNothing(), (<any>Object).assign(environment, addEnv)]
+    }
+  }
+}
+
+let statement = new Assign('x', new Add(new Variable('x'), new Nmbr(1)))
+let env: object = { x: (new Nmbr(2)) }
+console.log(statement.isReducible())
+let result = statement.reduce(env)
+statement = result[0]
+env = result[1]
+console.log(statement.inspect())
+console.log(env)
+result = statement.reduce(env)
+statement = result[0]
+env = result[1]
+console.log(statement.inspect())
+console.log(env)
+result = statement.reduce(env)
+statement = result[0]
+env = result[1]
+console.log(statement.inspect())
+console.log(env)
+console.log(statement.isReducible())
