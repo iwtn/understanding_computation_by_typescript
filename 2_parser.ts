@@ -301,3 +301,37 @@ class If {
   new If(new Variable('x'), new Assign('y', new Nmbr(1)),  new Assign('y', new Nmbr(2))),
   { x: new Bool(true) }
 )).run()
+
+class Sequence {
+  constructor(public first: any, public second: any) {
+  }
+
+  inspect(): string {
+    return `<<${this}>>`
+  }
+
+  toString(): string {
+    return `${this.first}; ${this.second}`
+  }
+
+  isReducible() : boolean {
+    return true
+  }
+
+  reduce(environment: object): any {
+    if (this.first instanceof DoNothing) {
+      return [this.second, environment]
+    } else {
+      const result = this.first.reduce(environment)
+      return [new Sequence(result[0], this.second), result[1]]
+    }
+  }
+}
+
+(new StatementMachine(
+  new Sequence(
+    new Assign('x', new Add(new Nmbr(1), new Nmbr(1))),
+    new Assign('y', new Add(new Variable('x'), new Nmbr(3)))
+  ),
+  {}
+)).run()
