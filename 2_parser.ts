@@ -335,3 +335,34 @@ class Sequence {
   ),
   {}
 )).run()
+
+class While {
+  constructor(public condition: any, public body: any) {
+  }
+
+  inspect(): string {
+    return `<<${this}>>`
+  }
+
+  toString(): string {
+    return `while (${this.condition}) { ${this.body} }`
+  }
+
+  isReducible() : boolean {
+    return true
+  }
+
+  reduce(environment: object): any {
+    return [new If(this.condition, new Sequence(this.body, this), new DoNothing()), environment]
+  }
+}
+
+(new StatementMachine(
+  new While(
+    new LessThan(new Variable('x'), new Nmbr(5)),
+    new Assign('x', new Multiply(new Variable('x'), new Nmbr(3)))
+  ),
+  {
+    x: new Nmbr(1),
+  }
+)).run()
