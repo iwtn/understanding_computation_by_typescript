@@ -256,3 +256,48 @@ class StatementMachine {
   new Assign('x', new Add(new Variable('x'), new Nmbr(1))),
   { x: new Nmbr(2) }
 )).run()
+
+class If {
+  constructor(public condition: any, public consequence: any, public altervative: any) {
+  }
+
+  inspect(): string {
+    return `<<${this}>>`
+  }
+
+  toString(): string {
+    return `if i(${this.condition}) { ${this.consequence} } else { ${this.altervative} }`
+  }
+
+  isReducible() : boolean {
+    return true
+  }
+
+  reduce(environment: object): any {
+    let first: any = null
+    let second: any = null
+    if (this.condition.isReducible()) {
+      first = new If(this.condition.reduce(environment), this.consequence, this.altervative)
+      second = environment
+    } else {
+      switch (this.condition.value) {
+        case (true):
+          first = this.consequence
+          second = environment
+          break;
+        case (false):
+          first = this.altervative
+          second = environment
+          break;
+        default:
+          break;
+      }
+    }
+    return [first, second]
+  }
+}
+
+(new StatementMachine(
+  new If(new Variable('x'), new Assign('y', new Nmbr(1)),  new Assign('y', new Nmbr(2))),
+  { x: new Bool(true) }
+)).run()
