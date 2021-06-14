@@ -59,3 +59,54 @@ const result = new LessThan(
   new Variable('y')
 ).evaluate({ x: new Nmbr(2), y: new Nmbr(5) })
 console.log(result)
+
+class Assign {
+  constructor(public name: any, public expression: any) {
+  }
+
+  evaluate(environment: object): any {
+    environment[this.name] = this.expression.evaluate(environment)
+    return environment
+  }
+}
+
+class If {
+  constructor(public condition: any, public consequence: any, public altervative: any) {
+  }
+
+  evaluate(environment: object): any {
+    if (this.condition.evaluate(environment).value) {
+      return this.consequence.evaluate(environment)
+    } else {
+      return this.altervative.evaluate(environment)
+    }
+  }
+}
+
+class Sequence {
+  constructor(public first: any, public second: any) {
+  }
+
+  evaluate(environment: object): any {
+    return this.second.evaluate(this.first.evaluate(environment))
+  }
+}
+
+class While {
+  constructor(public condition: any, public body: any) {
+  }
+
+  evaluate(environment: object): any {
+    if (this.condition.evaluate(environment).value) {
+      return this.evaluate(this.body.evaluate(environment))
+    } else {
+      return environment
+    }
+  }
+}
+
+let statement = new While(
+  new LessThan(new Variable('x'), new Nmbr(5)),
+  new Assign('x', new Multiply(new Variable('x'), new Nmbr(3)))
+)
+console.log(statement.evaluate({ x: new Nmbr(1) }))
