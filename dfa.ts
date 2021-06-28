@@ -44,3 +44,42 @@ console.log(rulebook)
 console.log(rulebook.nextState(1, 'a'))
 console.log(rulebook.nextState(1, 'b'))
 console.log(rulebook.nextState(2, 'b'))
+
+class DFA {
+  constructor(private currentState: number, private acceptStates: number[], private ruleBook: DFARulebook) {
+  }
+
+  isAccepting(): boolean {
+    for (const as of this.acceptStates) {
+      if (as == this.currentState) {
+        return true
+      }
+    }
+    return false
+  }
+
+  readCharacter(character: string): void {
+    this.currentState = rulebook.nextState(this.currentState, character)
+  }
+
+  readString(characters: string): void {
+    for (const char of characters) {
+      this.readCharacter(char)
+    }
+  }
+}
+
+let dfa = new DFA(1, [3], rulebook)
+console.log(dfa.isAccepting())
+dfa.readCharacter('b')
+console.log(dfa.isAccepting())
+dfa.readCharacter('a')
+dfa.readCharacter('a')
+dfa.readCharacter('a')
+console.log(dfa.isAccepting())
+dfa.readCharacter('b')
+console.log(dfa.isAccepting())
+
+dfa = new DFA(1, [3], rulebook)
+dfa.readString('baaab')
+console.log(dfa.isAccepting())
