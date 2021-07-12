@@ -83,3 +83,23 @@ console.log(dfa.isAccepting())
 dfa = new DFA(1, [3], rulebook)
 dfa.readString('baaab')
 console.log(dfa.isAccepting())
+
+class DFADesign {
+  constructor(private startState: number, private acceptStates: number[], private rulebook: DFARulebook) {
+  }
+
+  toDfa(): DFA {
+    return new DFA(this.startState, this.acceptStates, this.rulebook)
+  }
+
+  isAccepts(characters: string): boolean {
+    const dfa: DFA = this.toDfa()
+    dfa.readString(characters)
+    return dfa.isAccepting()
+  }
+}
+
+const dd = new DFADesign(1, [3], rulebook)
+console.log(dd.isAccepts('a'))
+console.log(dd.isAccepts('baa'))
+console.log(dd.isAccepts('baba'))
