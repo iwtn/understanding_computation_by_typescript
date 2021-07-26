@@ -27,6 +27,33 @@ class NFARulebook {
     return new Set<number>(results.flat())
   }
 
+  followFreeMoves(states: Set<number>): Set<number> {
+    const moreStates: Set<number> = this.nextStates(states, null)
+
+    if (this.isSubset(moreStates, states)) {
+      return states
+    } else {
+      return this.followFreeMoves(moreStates)
+    }
+  }
+
+  isSubset(moreStates: Set<number>, targetStates: Set<number>): boolean {
+    for (const ms of moreStates) {
+      let isIn = false
+
+      for(const ts of targetStates) {
+        if (ts == ms) {
+          isIn = true
+        }
+      }
+
+      if (isIn == false) {
+        return false
+      }
+    }
+    return true
+  }
+
   followRulesFor(state: number, character: string): number[] {
     return this.rulesFor(state, character).map( rule => rule.follow())
   }
@@ -61,8 +88,13 @@ class NFA {
   constructor(private currentStates: Set<number>, private acceptStates: Set<number>, private ruleBook: NFARulebook) {
   }
 
+  getCurrentState() {
+    this.currentStates = this.ruleBook.followFreeMoves(this.currentStates)
+    return this.currentStates
+  }
+
   isAccepting(): boolean {
-    for (const currentState of this.currentStates) {
+    for (const currentState of this.getCurrentState()) {
       for (const acceptState of this.acceptStates) {
         if (currentState == acceptState) {
           return true
@@ -73,7 +105,7 @@ class NFA {
   }
 
   readCharacter(character: string): void {
-    this.currentStates = this.ruleBook.nextStates(this.currentStates, character)
+    this.currentStates = this.ruleBook.nextStates(this.getCurrentState(), character)
   }
 
   readString(characters: string): void {
@@ -117,3 +149,19 @@ console.log("\n NFADesign")
 const nfaDesign = new NFADesign(1, new Set([4]), rulebook)
 console.log(nfaDesign.isAccepts('bbbbb'))
 console.log(nfaDesign.isAccepts('bbabb'))
+
+console.log("\n NFADesign with Free Move")
+const rulebookWithFree = new NFARulebook([
+  new FARule(1, null, 2),
+  new FARule(2, 'a',  3),
+  new FARule(3, 'a',  2),
+  new FARule(4, 'a',  5),
+  new FARule(5, 'a',  6),
+  new FARule(6, 'a',  4),
+  new FARule(1, null, 4)
+])
+const nfaDesign2 = new NFADesign(1, new Set([2, 4]), rulebookWithFree)
+console.log(nfaDesign2.isAccepts('aa'))
+console.log(nfaDesign2.isAccepts('aaa'))
+console.log(nfaDesign2.isAccepts('aaaaa'))
+console.log(nfaDesign2.isAccepts('aaaaaa'))
