@@ -1,12 +1,12 @@
-class FARule {
-  constructor(private state: number, private character: string, private nextState: number) {
+export class FARule {
+  constructor(private state: any, private character: string, private nextState: any) {
   }
 
-  appliesTo(state: number, character: string): boolean {
+  appliesTo(state: any, character: string): boolean {
     return (this.state == state && this.character == character)
   }
 
-  follow(): number {
+  follow(): any {
     return this.nextState
   }
 
@@ -15,20 +15,20 @@ class FARule {
   }
 }
 
-class NFARulebook {
+export class NFARulebook {
   constructor(private rules: FARule[]) {
   }
 
-  nextStates(states: Set<number>, character: string): Set<number> {
-    const results:number[][] = []
+  nextStates(states: Set<any>, character: string): Set<any> {
+    const results:any[][] = []
     for (const state of states) {
       results.push(this.followRulesFor(state, character).flat())
     }
-    return new Set<number>(results.flat())
+    return new Set<any>(results.flat())
   }
 
-  followFreeMoves(states: Set<number>): Set<number> {
-    const moreStates: Set<number> = this.nextStates(states, null)
+  followFreeMoves(states: Set<any>): Set<any> {
+    const moreStates: Set<any> = this.nextStates(states, null)
 
     if (this.isSubset(moreStates, states)) {
       return states
@@ -37,7 +37,7 @@ class NFARulebook {
     }
   }
 
-  isSubset(moreStates: Set<number>, targetStates: Set<number>): boolean {
+  isSubset(moreStates: Set<any>, targetStates: Set<any>): boolean {
     for (const ms of moreStates) {
       let isIn = false
 
@@ -54,11 +54,11 @@ class NFARulebook {
     return true
   }
 
-  followRulesFor(state: number, character: string): number[] {
+  followRulesFor(state: any, character: string): any[] {
     return this.rulesFor(state, character).map( rule => rule.follow())
   }
 
-  rulesFor(state: number, character: string): FARule[] {
+  rulesFor(state: any, character: string): FARule[] {
     const rls: FARule[] = []
     for (const rule of this.rules) {
       if (rule.appliesTo(state, character)) {
@@ -85,7 +85,7 @@ console.log(rulebook.nextStates(new Set([1, 3]), 'b'))
 
 
 class NFA {
-  constructor(private currentStates: Set<number>, private acceptStates: Set<number>, private ruleBook: NFARulebook) {
+  constructor(private currentStates: Set<any>, private acceptStates: Set<any>, private ruleBook: NFARulebook) {
   }
 
   getCurrentState() {
@@ -130,8 +130,8 @@ console.log(nfa2.isAccepting())
 nfa2.readString('bbbbb')
 console.log(nfa2.isAccepting())
 
-class NFADesign {
-  constructor(private startState: number, private acceptStates: Set<number>, private rulebook: NFARulebook) {
+export class NFADesign {
+  constructor(private startState: any, private acceptStates: Set<any>, private rulebook: NFARulebook) {
   }
 
   toNfa(): NFA {
