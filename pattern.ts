@@ -81,6 +81,21 @@ class Concatenate extends Pattern {
   precedence(): number {
     return 1
   }
+
+  toNFADesign(): NFADesign {
+    const firstNFADesign = this.first.toNFADesign()
+    const secondNFADesign = this.second.toNFADesign()
+
+    const startState = firstNFADesign.startState
+    const acceptStates = secondNFADesign.acceptStates
+    const rules = firstNFADesign.rulebook.rules.concat(secondNFADesign.rulebook.rules)
+    const extraRules:FARule[] = []
+    for(const state of firstNFADesign.acceptStates) {
+      extraRules.push(new FARule(state, null, secondNFADesign.startState))
+    }
+    const rulebook = new NFARulebook(rules.concat(extraRules))
+    return new NFADesign(startState, acceptStates, rulebook)
+  }
 }
 
 class Choose extends Pattern {
@@ -125,3 +140,15 @@ console.log(nfaDesign2.isAccepts('b'))
 
 console.log((new Empty()).isMatch('a'))
 console.log((new Literal('a')).isMatch('a'))
+
+
+const pattern2 = new Concatenate(new Literal('a'), new Literal('b'))
+console.log(pattern2)
+console.log(pattern2.isMatch('a'))
+console.log(pattern2.isMatch('ab'))
+console.log(pattern2.isMatch('abc'))
+const pattern3 = new Concatenate(new Literal('a'), new Concatenate(new Literal('b'), new Literal('c')))
+console.log(pattern3)
+console.log(pattern3.isMatch('a'))
+console.log(pattern3.isMatch('ab'))
+console.log(pattern3.isMatch('abc'))

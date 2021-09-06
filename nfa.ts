@@ -16,7 +16,7 @@ export class FARule {
 }
 
 export class NFARulebook {
-  constructor(private rules: FARule[]) {
+  constructor(public rules: FARule[]) {
   }
 
   nextStates(states: Set<any>, character: string): Set<any> {
@@ -131,7 +131,7 @@ nfa2.readString('bbbbb')
 console.log(nfa2.isAccepting())
 
 export class NFADesign {
-  constructor(private startState: any, private acceptStates: Set<any>, private rulebook: NFARulebook) {
+  constructor(public startState: any, public acceptStates: Set<any>, public rulebook: NFARulebook) {
   }
 
   toNfa(): NFA {
