@@ -110,6 +110,21 @@ class Choose extends Pattern {
   precedence(): number {
     return 0
   }
+
+  toNFADesign(): NFADesign {
+    const firstNFADesign = this.first.toNFADesign()
+    const secondNFADesign = this.second.toNFADesign()
+
+    const startState = new Object()
+    const acceptStates = Array.from(firstNFADesign.acceptStates).concat(Array.from(secondNFADesign.acceptStates))
+    const rules = firstNFADesign.rulebook.rules.concat(secondNFADesign.rulebook.rules)
+    const extraRules:FARule[] = [
+      new FARule(startState, null, firstNFADesign.startState),
+      new FARule(startState, null, secondNFADesign.startState)
+    ]
+    const rulebook = new NFARulebook(rules.concat(extraRules))
+    return new NFADesign(startState, new Set(acceptStates), rulebook)
+  }
 }
 
 class Repeat extends Pattern {
@@ -152,3 +167,9 @@ console.log(pattern3)
 console.log(pattern3.isMatch('a'))
 console.log(pattern3.isMatch('ab'))
 console.log(pattern3.isMatch('abc'))
+
+const pattern4 = new Choose(new Literal('a'), new Literal('b'))
+console.log(pattern4)
+console.log(pattern4.isMatch('a'))
+console.log(pattern4.isMatch('b'))
+console.log(pattern4.isMatch('c'))
