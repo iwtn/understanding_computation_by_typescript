@@ -20,7 +20,7 @@ export class NFARulebook {
   }
 
   nextStates(states: Set<any>, character: string): Set<any> {
-    const results:any[][] = []
+    const results:any[][] = [Array.from(states)]
     for (const state of states) {
       results.push(this.followRulesFor(state, character).flat())
     }

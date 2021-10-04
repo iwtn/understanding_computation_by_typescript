@@ -137,7 +137,22 @@ class Repeat extends Pattern {
   }
 
   precedence(): number {
-    return 3
+    return 2
+  }
+
+  toNFADesign(): NFADesign {
+    const patternNFADesign = this.pattern.toNFADesign()
+
+    const startState = new Object()
+    const acceptStates = Array.from(patternNFADesign.acceptStates).concat([startState])
+    const rules = patternNFADesign.rulebook.rules
+    const extraRules:FARule[] = []
+    for(const state of patternNFADesign.acceptStates) {
+      extraRules.push(new FARule(state, null, patternNFADesign.startState))
+    }
+    extraRules.push(new FARule(startState, null, patternNFADesign.startState))
+    const rulebook = new NFARulebook(rules.concat(extraRules))
+    return new NFADesign(startState, new Set(acceptStates), rulebook)
   }
 }
 
@@ -153,23 +168,36 @@ console.log(nfaDesign2.isAccepts(''))
 console.log(nfaDesign2.isAccepts('a'))
 console.log(nfaDesign2.isAccepts('b'))
 
+console.log((new Empty()))
+console.log((new Empty()).isMatch(''))
 console.log((new Empty()).isMatch('a'))
+console.log((new Literal('a')))
 console.log((new Literal('a')).isMatch('a'))
-
 
 const pattern2 = new Concatenate(new Literal('a'), new Literal('b'))
 console.log(pattern2)
+console.log(pattern2.toS())
 console.log(pattern2.isMatch('a'))
 console.log(pattern2.isMatch('ab'))
 console.log(pattern2.isMatch('abc'))
 const pattern3 = new Concatenate(new Literal('a'), new Concatenate(new Literal('b'), new Literal('c')))
 console.log(pattern3)
+console.log(pattern3.toS())
 console.log(pattern3.isMatch('a'))
 console.log(pattern3.isMatch('ab'))
 console.log(pattern3.isMatch('abc'))
 
 const pattern4 = new Choose(new Literal('a'), new Literal('b'))
 console.log(pattern4)
+console.log(pattern4.toS())
 console.log(pattern4.isMatch('a'))
 console.log(pattern4.isMatch('b'))
 console.log(pattern4.isMatch('c'))
+
+const pattern5 = new Repeat(new Literal('a'))
+console.log(pattern5)
+console.log(pattern5.toS())
+console.log(pattern5.isMatch(''))
+console.log(pattern5.isMatch('a'))
+console.log(pattern5.isMatch('aaaa'))
+console.log(pattern5.isMatch('b'))
