@@ -7,5 +7,5 @@ export function assert(ans: any, result: any) {
 }
 
 export function part(text: string) {
-  console.log("\n\n### " + text + " ###")
+  console.log("\n### " + text + " ###")
 }
