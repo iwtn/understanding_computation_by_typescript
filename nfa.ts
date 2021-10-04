@@ -1,3 +1,5 @@
+import { assert, part } from './test'
+
 export class FARule {
   constructor(private state: any, private character: string, private nextState: any) {
   }
@@ -20,7 +22,7 @@ export class NFARulebook {
   }
 
   nextStates(states: Set<any>, character: string): Set<any> {
-    const results:any[][] = [Array.from(states)]
+    const results:any[][] = []
     for (const state of states) {
       results.push(this.followRulesFor(state, character).flat())
     }
@@ -115,20 +117,20 @@ class NFA {
   }
 }
 
-console.log("\n NFA")
+part("NFA")
 const nfa = new NFA(new Set([1]), new Set([4]), rulebook)
-console.log(nfa.isAccepting())
+assert(false, nfa.isAccepting())
 nfa.readCharacter('b')
-console.log(nfa.isAccepting())
+assert(false, nfa.isAccepting())
 nfa.readCharacter('a')
-console.log(nfa.isAccepting())
+assert(false, nfa.isAccepting())
 nfa.readCharacter('b')
-console.log(nfa.isAccepting())
+assert(true, nfa.isAccepting())
 
 const nfa2 = new NFA(new Set([1]), new Set([4]), rulebook)
-console.log(nfa2.isAccepting())
+assert(false, nfa2.isAccepting())
 nfa2.readString('bbbbb')
-console.log(nfa2.isAccepting())
+assert(true, nfa2.isAccepting())
 
 export class NFADesign {
   constructor(public startState: any, public acceptStates: Set<any>, public rulebook: NFARulebook) {
@@ -145,12 +147,13 @@ export class NFADesign {
   }
 }
 
-console.log("\n NFADesign")
+part("NFADesign")
 const nfaDesign = new NFADesign(1, new Set([4]), rulebook)
-console.log(nfaDesign.isAccepts('bbbbb'))
-console.log(nfaDesign.isAccepts('bbabb'))
+assert(true, nfaDesign.isAccepts('bab'))
+assert(true, nfaDesign.isAccepts('bbbbb'))
+assert(false, nfaDesign.isAccepts('bbabb'))
 
-console.log("\n NFADesign with Free Move")
+part("NFADesign with Free Move")
 const rulebookWithFree = new NFARulebook([
   new FARule(1, null, 2),
   new FARule(2, 'a',  3),
@@ -161,7 +164,7 @@ const rulebookWithFree = new NFARulebook([
   new FARule(1, null, 4)
 ])
 const nfaDesign2 = new NFADesign(1, new Set([2, 4]), rulebookWithFree)
-console.log(nfaDesign2.isAccepts('aa'))
-console.log(nfaDesign2.isAccepts('aaa'))
-console.log(nfaDesign2.isAccepts('aaaaa'))
-console.log(nfaDesign2.isAccepts('aaaaaa'))
+assert(true, nfaDesign2.isAccepts('aa'))
+assert(true, nfaDesign2.isAccepts('aaa'))
+assert(false, nfaDesign2.isAccepts('aaaaa'))
+assert(true, nfaDesign2.isAccepts('aaaaaa'))
