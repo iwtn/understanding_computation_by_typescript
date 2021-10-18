@@ -62,8 +62,8 @@ class Literal extends Pattern {
   }
 
   toNFADesign(): NFADesign {
-    const startState = 2
-    const acceptState = 3
+    const startState = new Object()
+    const acceptState = new Object()
     const rule = new FARule(startState, this.character, acceptState)
     const rulebook = new NFARulebook([rule])
     return new NFADesign(startState, new Set([acceptState]), rulebook)
@@ -143,8 +143,7 @@ class Repeat extends Pattern {
 
   toNFADesign(): NFADesign {
     const patternNFADesign = this.pattern.toNFADesign()
-    // const startState = new Object()
-    const startState = 1
+    const startState = new Object()
     const acceptStates = Array.from(patternNFADesign.acceptStates).concat([startState])
     const rules = patternNFADesign.rulebook.rules
     const extraRules = []
@@ -157,7 +156,6 @@ class Repeat extends Pattern {
   }
 }
 
-/*
 const pattern = new Repeat(new Choose(new Concatenate(new Literal('a'), new Literal('b')), new Literal('a')))
 console.log(pattern)
 console.log(pattern.inspect())
@@ -206,7 +204,6 @@ assert(true, pattern4.isMatch('a'))
 assert(true, pattern4.isMatch('b'))
 assert(false, pattern4.isMatch('c'))
 assert(false, pattern4.isMatch('ab'))
-*/
 
 part('Repeat')
 const pattern5 = new Repeat(new Literal('a'))
