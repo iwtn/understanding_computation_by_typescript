@@ -17,6 +17,23 @@ export class FARule {
   }
 }
 
+const isSubset = (moreStates: Set<any>, targetStates: Set<any>): boolean => {
+  for (const ts of targetStates) {
+    let isIn = false
+
+    for(const ms of moreStates) {
+      if (ts == ms) {
+        isIn = true
+      }
+    }
+
+    if (isIn == false) {
+      return false
+    }
+  }
+  return true
+}
+
 export class NFARulebook {
   constructor(public rules: FARule[]) {
   }
@@ -32,29 +49,13 @@ export class NFARulebook {
   followFreeMoves(states: Set<any>): Set<any> {
     const moreStates: Set<any> = this.nextStates(states, null)
 
-    if (this.isSubset(moreStates, states)) {
+    if (isSubset(moreStates, states)) {
       return states
     } else {
       return this.followFreeMoves(moreStates)
     }
   }
 
-  isSubset(moreStates: Set<any>, targetStates: Set<any>): boolean {
-    for (const ms of moreStates) {
-      let isIn = false
-
-      for(const ts of targetStates) {
-        if (ts == ms) {
-          isIn = true
-        }
-      }
-
-      if (isIn == false) {
-        return false
-      }
-    }
-    return true
-  }
 
   followRulesFor(state: any, character: string): any[] {
     return this.rulesFor(state, character).map( rule => rule.follow())
@@ -76,13 +77,19 @@ class NFA {
   }
 
   getCurrentState() {
+    console.log('this cs')
+    console.log(this.currentStates)
     this.currentStates = this.ruleBook.followFreeMoves(this.currentStates)
+    console.log('this 2 cs')
+    console.log(this.currentStates)
     return this.currentStates
   }
 
   isAccepting(): boolean {
     for (const currentState of this.getCurrentState()) {
+      console.log("cs: " + currentState)
       for (const acceptState of this.acceptStates) {
+        console.log("as: " + acceptState)
         if (currentState == acceptState) {
           return true
         }
@@ -169,4 +176,11 @@ assert(true, nfaDesign2.isAccepts('aa'))
 assert(true, nfaDesign2.isAccepts('aaa'))
 assert(false, nfaDesign2.isAccepts('aaaaa'))
 assert(true, nfaDesign2.isAccepts('aaaaaa'))
+
+assert(true, isSubset(new Set([1, 2, 3]), new Set([1])))
+assert(false, isSubset(new Set([1, 2, 3]), new Set([4])))
+assert(true, isSubset(new Set([1, 2]), new Set([1, 2])))
+assert(true, isSubset(new Set([1, 2, 3]), new Set([1, 3])))
+assert(false, isSubset(new Set([1]), new Set([1, 2])))
+assert(true, isSubset(new Set([1]), new Set([])))
 */
