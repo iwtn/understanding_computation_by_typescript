@@ -62,8 +62,8 @@ class Literal extends Pattern {
   }
 
   toNFADesign(): NFADesign {
-    const startState = new Object()
-    const acceptState = new Object()
+    const startState = 2
+    const acceptState = 3
     const rule = new FARule(startState, this.character, acceptState)
     const rulebook = new NFARulebook([rule])
     return new NFADesign(startState, new Set([acceptState]), rulebook)
@@ -140,12 +140,42 @@ class Repeat extends Pattern {
   precedence(): number {
     return 2
   }
+    /*
+  pattern_nfa_design = pattern.to_nfa_design
+  start_state = Object.new
+  accept_states = pattern_nfa_design.accept_states + [start_state] rules = pattern_nfa_design.rulebook.rules
+  extra_rules =
+  pattern_nfa_design.accept_states.map { |accept_state| FARule.new(accept_state, nil, pattern_nfa_design.start_state)
+  }+
+  [FARule.new(start_state, nil, pattern_nfa_design.start_state)] rulebook = NFARulebook.new(rules + extra_rules)
+  NFADesign.new(start_state, accept_states, rulebook) end
+  */
+
+  toNFADesign(): NFADesign {
+    const patternNFADesign = this.pattern.toNFADesign()
+    // const startState = new Object()
+    const startState = 123
+    const acceptStates = Array.from(patternNFADesign.acceptStates).concat([startState])
+    const rules = patternNFADesign.rulebook.rules
+    const extraRules = []
+    for (const as of patternNFADesign.acceptStates) {
+      extraRules.push(new FARule(as, null, patternNFADesign.startState))
+    }
+    extraRules.push(new FARule(startState, null, patternNFADesign.startState))
+    const ruleBook = new NFARulebook(Array.from(rules).concat(extraRules))
+    return new NFADesign(startState, new Set(acceptStates), ruleBook)
+  }
+
+  /*
 
   toNFADesign(): NFADesign {
     const patternNFADesign = this.pattern.toNFADesign()
 
-    const startState = new Object()
+    // const startState = new Object()
+    const startState = 1
+    console.log(startState)
     const acceptStates = Array.from(patternNFADesign.acceptStates).concat([startState])
+    console.log(acceptStates)
     const rules = patternNFADesign.rulebook.rules
     const extraRules:FARule[] = []
     for(const state of patternNFADesign.acceptStates) {
@@ -153,10 +183,13 @@ class Repeat extends Pattern {
     }
     extraRules.push(new FARule(startState, null, patternNFADesign.startState))
     const rulebook = new NFARulebook(rules.concat(extraRules))
+    console.log(rulebook)
     return new NFADesign(startState, new Set(acceptStates), rulebook)
   }
+  */
 }
 
+/*
 const pattern = new Repeat(new Choose(new Concatenate(new Literal('a'), new Literal('b')), new Literal('a')))
 console.log(pattern)
 console.log(pattern.inspect())
@@ -205,10 +238,12 @@ assert(true, pattern4.isMatch('a'))
 assert(true, pattern4.isMatch('b'))
 assert(false, pattern4.isMatch('c'))
 assert(false, pattern4.isMatch('ab'))
+*/
 
 part('Repeat')
 const pattern5 = new Repeat(new Literal('a'))
 console.log(pattern5)
+console.log(pattern5.toNFADesign())
 assert('a*', pattern5.toS())
 assert(true, pattern5.isMatch(''))
 assert(true, pattern5.isMatch('a'))

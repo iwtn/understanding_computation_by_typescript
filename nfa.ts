@@ -71,21 +71,6 @@ export class NFARulebook {
   }
 }
 
-const rulebook: NFARulebook = new NFARulebook([
-   new FARule(1, 'a', 1),
-   new FARule(1, 'b', 1),
-   new FARule(1, 'b', 2),
-   new FARule(2, 'a', 3),
-   new FARule(2, 'b', 3),
-   new FARule(3, 'a', 4),
-   new FARule(3, 'b', 4)
- ])
-console.log(rulebook)
-console.log(rulebook.nextStates(new Set([1]), 'b'))
-console.log(rulebook.nextStates(new Set([1, 2]), 'a'))
-console.log(rulebook.nextStates(new Set([1, 3]), 'b'))
-
-
 class NFA {
   constructor(private currentStates: Set<any>, private acceptStates: Set<any>, private ruleBook: NFARulebook) {
   }
@@ -117,21 +102,6 @@ class NFA {
   }
 }
 
-part("NFA")
-const nfa = new NFA(new Set([1]), new Set([4]), rulebook)
-assert(false, nfa.isAccepting())
-nfa.readCharacter('b')
-assert(false, nfa.isAccepting())
-nfa.readCharacter('a')
-assert(false, nfa.isAccepting())
-nfa.readCharacter('b')
-assert(true, nfa.isAccepting())
-
-const nfa2 = new NFA(new Set([1]), new Set([4]), rulebook)
-assert(false, nfa2.isAccepting())
-nfa2.readString('bbbbb')
-assert(true, nfa2.isAccepting())
-
 export class NFADesign {
   constructor(public startState: any, public acceptStates: Set<any>, public rulebook: NFARulebook) {
   }
@@ -146,6 +116,37 @@ export class NFADesign {
     return nfa.isAccepting()
   }
 }
+
+/*
+const rulebook: NFARulebook = new NFARulebook([
+   new FARule(1, 'a', 1),
+   new FARule(1, 'b', 1),
+   new FARule(1, 'b', 2),
+   new FARule(2, 'a', 3),
+   new FARule(2, 'b', 3),
+   new FARule(3, 'a', 4),
+   new FARule(3, 'b', 4)
+ ])
+console.log(rulebook)
+console.log(rulebook.nextStates(new Set([1]), 'b'))
+console.log(rulebook.nextStates(new Set([1, 2]), 'a'))
+console.log(rulebook.nextStates(new Set([1, 3]), 'b'))
+
+
+part("NFA")
+const nfa = new NFA(new Set([1]), new Set([4]), rulebook)
+assert(false, nfa.isAccepting())
+nfa.readCharacter('b')
+assert(false, nfa.isAccepting())
+nfa.readCharacter('a')
+assert(false, nfa.isAccepting())
+nfa.readCharacter('b')
+assert(true, nfa.isAccepting())
+
+const nfa2 = new NFA(new Set([1]), new Set([4]), rulebook)
+assert(false, nfa2.isAccepting())
+nfa2.readString('bbbbb')
+assert(true, nfa2.isAccepting())
 
 part("NFADesign")
 const nfaDesign = new NFADesign(1, new Set([4]), rulebook)
@@ -168,3 +169,4 @@ assert(true, nfaDesign2.isAccepts('aa'))
 assert(true, nfaDesign2.isAccepts('aaa'))
 assert(false, nfaDesign2.isAccepts('aaaaa'))
 assert(true, nfaDesign2.isAccepts('aaaaaa'))
+*/
