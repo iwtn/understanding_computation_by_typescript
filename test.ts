@@ -1,5 +1,4 @@
 export function assert(ans: any, result: any) {
-  console.log("\n# start #")
   if (ans == result) {
     console.log("answer: " + ans + " is ok")
   } else {
@@ -7,6 +6,7 @@ export function assert(ans: any, result: any) {
     console.log("answer: " + ans)
     console.log("result: " + result)
   }
+  console.log("# end #\n")
 }
 
 export function part(text: string) {

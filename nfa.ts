@@ -49,10 +49,10 @@ export class NFARulebook {
   followFreeMoves(states: Set<any>): Set<any> {
     const moreStates: Set<any> = this.nextStates(states, null)
 
-    if (isSubset(moreStates, states)) {
+    if (isSubset(states, moreStates)) {
       return states
     } else {
-      return this.followFreeMoves(moreStates)
+      return this.followFreeMoves(new Set(Array.from(states).concat(Array.from(moreStates))))
     }
   }
 
@@ -77,19 +77,13 @@ class NFA {
   }
 
   getCurrentState() {
-    console.log('this cs')
-    console.log(this.currentStates)
     this.currentStates = this.ruleBook.followFreeMoves(this.currentStates)
-    console.log('this 2 cs')
-    console.log(this.currentStates)
     return this.currentStates
   }
 
   isAccepting(): boolean {
     for (const currentState of this.getCurrentState()) {
-      console.log("cs: " + currentState)
       for (const acceptState of this.acceptStates) {
-        console.log("as: " + acceptState)
         if (currentState == acceptState) {
           return true
         }
@@ -125,6 +119,7 @@ export class NFADesign {
 }
 
 /*
+*/
 const rulebook: NFARulebook = new NFARulebook([
    new FARule(1, 'a', 1),
    new FARule(1, 'b', 1),
@@ -176,6 +171,7 @@ assert(true, nfaDesign2.isAccepts('aa'))
 assert(true, nfaDesign2.isAccepts('aaa'))
 assert(false, nfaDesign2.isAccepts('aaaaa'))
 assert(true, nfaDesign2.isAccepts('aaaaaa'))
+assert(false, nfaDesign2.isAccepts('aaaaaaa'))
 
 assert(true, isSubset(new Set([1, 2, 3]), new Set([1])))
 assert(false, isSubset(new Set([1, 2, 3]), new Set([4])))
@@ -183,4 +179,3 @@ assert(true, isSubset(new Set([1, 2]), new Set([1, 2])))
 assert(true, isSubset(new Set([1, 2, 3]), new Set([1, 3])))
 assert(false, isSubset(new Set([1]), new Set([1, 2])))
 assert(true, isSubset(new Set([1]), new Set([])))
-*/
