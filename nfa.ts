@@ -8,6 +8,10 @@ export class FARule {
     return (this.state == state && this.character == character)
   }
 
+  getCharacter(): string {
+    return this.character
+  }
+
   follow(): any {
     return this.nextState
   }
@@ -69,6 +73,17 @@ export class NFARulebook {
       return this.followFreeMoves(new Set(Array.from(states).concat(Array.from(moreStates))))
     }
   }
+
+  alphabet(): string[] {
+    const array = this.rules.map(rule => rule.getCharacter())
+    const charas: Set<any> = new Set()
+    for(const item of array) {
+      if (item != null) {
+        charas.add(item)
+      }
+    }
+    return Array.from(charas)
+  }
 }
 
 class NFA {
@@ -121,10 +136,18 @@ class NFASimulation {
   constructor(private nfaDesign: NFADesign) {
   }
 
-  nextState(state: Set<any>, character: string): Set<any> {
+  nextStates(state: Set<any>, character: string): Set<any> {
     const nfa = this.nfaDesign.toNfa(state)
     nfa.readCharacter(character)
     return nfa.getCurrentStates()
+  }
+
+  rulesFor(state: Set<any>): FARule[] {
+    const newRules: FARule[] = []
+    for (const c of this.nfaDesign.rulebook.alphabet()) {
+      newRules.push(new FARule(state, c, this.nextStates(state, c)))
+    }
+    return newRules
   }
 }
 
@@ -190,16 +213,16 @@ assert(false, isSubset(new Set([1]), new Set([1, 2])))
 assert(true, isSubset(new Set([1]), new Set([])))
 */
 
-const rulebook2: NFARulebook = new NFARulebook([
+const rulebook3: NFARulebook = new NFARulebook([
    new FARule(1, 'a', 1),
    new FARule(1, 'a', 2),
    new FARule(1, null, 2),
    new FARule(2, 'b', 3),
    new FARule(3, 'b', 1),
-   new FARule(3, null, 2)
+   new FARule(3, null, 2),
 ])
-console.log(rulebook2)
-const nfaDesign3 = new NFADesign(1, new Set([3]), rulebook2)
+console.log(rulebook3)
+const nfaDesign3 = new NFADesign(1, new Set([3]), rulebook3)
 console.log(nfaDesign3)
 console.log(nfaDesign3.toNfa().getCurrentStates())
 console.log(nfaDesign3.toNfa(new Set([2])).getCurrentStates())
@@ -207,8 +230,12 @@ console.log(nfaDesign3.toNfa(new Set([3])).getCurrentStates())
 
 const simulation = new NFASimulation(nfaDesign3)
 console.log(simulation)
-console.log(simulation.nextState(new Set([1, 2]), 'a')) // #<Set: {1, 2}>
-console.log(simulation.nextState(new Set([1, 2]), 'b')) // #<Set: {3, 2}>
-console.log(simulation.nextState(new Set([3, 2]), 'b')) // #<Set: {1, 3, 2}>
-console.log(simulation.nextState(new Set([1, 3, 2]), 'b')) // #<Set: {1, 3, 2}>
-console.log(simulation.nextState(new Set([1, 3, 2]), 'a')) // #<Set: {1, 2}>
+console.log(simulation.nextStates(new Set([1, 2]), 'a')) // #<Set: {1, 2}>
+console.log(simulation.nextStates(new Set([1, 2]), 'b')) // #<Set: {3, 2}>
+console.log(simulation.nextStates(new Set([3, 2]), 'b')) // #<Set: {1, 3, 2}>
+console.log(simulation.nextStates(new Set([1, 3, 2]), 'b')) // #<Set: {1, 3, 2}>
+console.log(simulation.nextStates(new Set([1, 3, 2]), 'a')) // #<Set: {1, 2}>
+
+console.log(rulebook3.alphabet())
+console.log(simulation.rulesFor(new Set([1, 2])))
+console.log(simulation.rulesFor(new Set([3, 2])))
