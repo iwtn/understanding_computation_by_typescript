@@ -75,12 +75,12 @@ class NFA {
   constructor(private currentStates: Set<any>, private acceptStates: Set<any>, private ruleBook: NFARulebook) {
   }
 
-  getCurrentState() {
+  getCurrentStates(): Set<any> {
     return this.ruleBook.followFreeMoves(this.currentStates)
   }
 
   isAccepting(): boolean {
-    for (const currentState of this.getCurrentState()) {
+    for (const currentState of this.getCurrentStates()) {
       for (const acceptState of this.acceptStates) {
         if (currentState == acceptState) {
           return true
@@ -91,7 +91,7 @@ class NFA {
   }
 
   readCharacter(character: string): void {
-    this.currentStates = this.ruleBook.nextStates(this.getCurrentState(), character)
+    this.currentStates = this.ruleBook.nextStates(this.getCurrentStates(), character)
   }
 
   readString(characters: string): void {
@@ -113,6 +113,18 @@ export class NFADesign {
     const nfa: NFA = this.toNfa()
     nfa.readString(characters)
     return nfa.isAccepting()
+  }
+}
+
+
+class NFASimulation {
+  constructor(private nfaDesign: NFADesign) {
+  }
+
+  nextState(state: Set<any>, character: string): Set<any> {
+    const nfa = this.nfaDesign.toNfa(state)
+    nfa.readCharacter(character)
+    return nfa.getCurrentStates()
   }
 }
 
@@ -187,8 +199,16 @@ const rulebook2: NFARulebook = new NFARulebook([
    new FARule(3, null, 2)
 ])
 console.log(rulebook2)
-const nfa_design2 = new NFADesign(1, new Set([3]), rulebook2)
-console.log(nfa_design2)
-console.log(nfa_design2.toNfa().getCurrentState())
-console.log(nfa_design2.toNfa(new Set([2])).getCurrentState())
-console.log(nfa_design2.toNfa(new Set([3])).getCurrentState())
+const nfaDesign3 = new NFADesign(1, new Set([3]), rulebook2)
+console.log(nfaDesign3)
+console.log(nfaDesign3.toNfa().getCurrentStates())
+console.log(nfaDesign3.toNfa(new Set([2])).getCurrentStates())
+console.log(nfaDesign3.toNfa(new Set([3])).getCurrentStates())
+
+const simulation = new NFASimulation(nfaDesign3)
+console.log(simulation)
+console.log(simulation.nextState(new Set([1, 2]), 'a')) // #<Set: {1, 2}>
+console.log(simulation.nextState(new Set([1, 2]), 'b')) // #<Set: {3, 2}>
+console.log(simulation.nextState(new Set([3, 2]), 'b')) // #<Set: {1, 3, 2}>
+console.log(simulation.nextState(new Set([1, 3, 2]), 'b')) // #<Set: {1, 3, 2}>
+console.log(simulation.nextState(new Set([1, 3, 2]), 'a')) // #<Set: {1, 2}>
