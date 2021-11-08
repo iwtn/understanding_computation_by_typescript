@@ -105,8 +105,8 @@ export class NFADesign {
   constructor(public startState: any, public acceptStates: Set<any>, public rulebook: NFARulebook) {
   }
 
-  toNfa(): NFA {
-    return new NFA(new Set([this.startState]), this.acceptStates, this.rulebook)
+  toNfa(currentStates: Set<any> = (new Set([this.startState]))): NFA {
+    return new NFA(currentStates, this.acceptStates, this.rulebook)
   }
 
   isAccepts(characters: string): boolean {
@@ -177,3 +177,18 @@ assert(true, isSubset(new Set([1, 2, 3]), new Set([1, 3])))
 assert(false, isSubset(new Set([1]), new Set([1, 2])))
 assert(true, isSubset(new Set([1]), new Set([])))
 */
+
+const rulebook2: NFARulebook = new NFARulebook([
+   new FARule(1, 'a', 1),
+   new FARule(1, 'a', 2),
+   new FARule(1, null, 2),
+   new FARule(2, 'b', 3),
+   new FARule(3, 'b', 1),
+   new FARule(3, null, 2)
+])
+console.log(rulebook2)
+const nfa_design2 = new NFADesign(1, new Set([3]), rulebook2)
+console.log(nfa_design2)
+console.log(nfa_design2.toNfa().getCurrentState())
+console.log(nfa_design2.toNfa(new Set([2])).getCurrentState())
+console.log(nfa_design2.toNfa(new Set([3])).getCurrentState())
