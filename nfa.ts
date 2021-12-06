@@ -77,13 +77,13 @@ export class NFARulebook {
 
   alphabet(): string[] {
     const array = this.rules.map(rule => rule.getCharacter())
-    const charas = Immutable.Set([])
+    let charas = Immutable.Set([])
     for(const item of array) {
       if (item != null) {
-        charas.add(item)
+        charas = charas.add(item)
       }
     }
-    return Array.from(charas)
+    return charas.toArray()
   }
 }
 
@@ -163,7 +163,6 @@ class NFASimulation {
       moreStates.add(rule.follow())
     }
 
-    console.log([states, moreStates, rules])
     if (isSubset(states, moreStates)) {
       return [states, rules]
     } else {
@@ -173,7 +172,6 @@ class NFASimulation {
 }
 
 /*
-*/
 const rulebook: NFARulebook = new NFARulebook([
    new FARule(1, 'a', 1),
    new FARule(1, 'b', 1),
@@ -236,7 +234,9 @@ assert(true, isSubset(Immutable.Set([1]), Immutable.Set([])))
 assert(true, isSubset(Immutable.Set(), Immutable.Set()))
 assert(true, isSubset(Immutable.Set([1, 2, 3]), Immutable.Set([1, 2, 3])))
 assert(false, isSubset(Immutable.Set([]), Immutable.Set([1, 2, 3])))
+*/
 
+part("Simulation")
 const rulebook3: NFARulebook = new NFARulebook([
    new FARule(1, 'a', 1),
    new FARule(1, 'a', 2),
@@ -260,12 +260,10 @@ console.log(simulation.nextStates(Immutable.Set([3, 2]), 'b').toJSON()) // #<Set
 console.log(simulation.nextStates(Immutable.Set([1, 3, 2]), 'b').toJSON()) // #<Set: {1, 3, 2}>
 console.log(simulation.nextStates(Immutable.Set([1, 3, 2]), 'a').toJSON()) // #<Set: {1, 2}>
 
+part("Alphabet")
 console.log(rulebook3.alphabet())
 console.log(simulation.rulesFor(Immutable.Set([1, 2])))
 console.log(simulation.rulesFor(Immutable.Set([3, 2])))
 
-/*
 const startState = nfaDesign3.toNfa().getCurrentStates()
 console.log(simulation.discoverStatesAndRules(Immutable.Set([startState])))
-*/
-
