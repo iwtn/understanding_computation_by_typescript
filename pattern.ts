@@ -1,5 +1,6 @@
 import { assert, part } from './test'
 import { FARule, NFADesign, NFARulebook } from './nfa';
+import * as Immutable from 'immutable';
 
 class Pattern {
   bracket(outerPrecedence: number): string {
@@ -42,7 +43,7 @@ class Empty extends Pattern {
 
   toNFADesign(): NFADesign {
     const startState = new Object()
-    const acceptState = new Set([startState])
+    const acceptState = Immutable.Set([startState])
     const rulebook = new NFARulebook([])
     return new NFADesign(startState, acceptState, rulebook)
   }
@@ -66,7 +67,7 @@ class Literal extends Pattern {
     const acceptState = new Object()
     const rule = new FARule(startState, this.character, acceptState)
     const rulebook = new NFARulebook([rule])
-    return new NFADesign(startState, new Set([acceptState]), rulebook)
+    return new NFADesign(startState, Immutable.Set([acceptState]), rulebook)
   }
 }
 
@@ -124,7 +125,7 @@ class Choose extends Pattern {
       new FARule(startState, null, secondNFADesign.startState)
     ]
     const rulebook = new NFARulebook(rules.concat(extraRules))
-    return new NFADesign(startState, new Set(acceptStates), rulebook)
+    return new NFADesign(startState, Immutable.Set(acceptStates), rulebook)
   }
 }
 
@@ -152,7 +153,7 @@ class Repeat extends Pattern {
     }
     extraRules.push(new FARule(startState, null, patternNFADesign.startState))
     const ruleBook = new NFARulebook(Array.from(rules).concat(extraRules))
-    return new NFADesign(startState, new Set(acceptStates), ruleBook)
+    return new NFADesign(startState, Immutable.Set(acceptStates), ruleBook)
   }
 }
 
