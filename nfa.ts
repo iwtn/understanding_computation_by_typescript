@@ -22,23 +22,6 @@ export class FARule {
   }
 }
 
-const isSubset = (moreStates: Immutable.Set<any>, targetStates: Immutable.Set<any>): boolean => {
-  for (const ts of targetStates) {
-    let isIn = false
-
-    for(const ms of moreStates) {
-      if (ts == ms) {
-        isIn = true
-      }
-    }
-
-    if (isIn == false) {
-      return false
-    }
-  }
-  return true
-}
-
 export class NFARulebook {
   constructor(public rules: FARule[]) {
   }
@@ -68,7 +51,7 @@ export class NFARulebook {
   followFreeMoves(states: Immutable.Set<any>): Immutable.Set<any> {
     const moreStates: Immutable.Set<any> = this.nextStates(states, null)
 
-    if (isSubset(states, moreStates)) {
+    if (moreStates.isSubset(states)) {
       return states
     } else {
       return this.followFreeMoves(Immutable.Set(Array.from(states).concat(Array.from(moreStates))))
@@ -158,15 +141,15 @@ class NFASimulation {
         rules.push(r)
       }
     }
-    const moreStates: Immutable.Set<any> = Immutable.Set()
+    let moreStates = Immutable.Set([])
     for (const rule of rules) {
-      moreStates.add(rule.follow())
+      moreStates = moreStates.add(rule.follow())
     }
 
-    if (isSubset(states, moreStates)) {
+    if (moreStates.isSubset(states)) {
       return [states, rules]
     } else {
-      return this.discoverStatesAndRules(Immutable.Set(Array.from(states).concat(Array.from(moreStates))))
+      return this.discoverStatesAndRules(Immutable.Set(states.toArray().concat(moreStates.toArray())))
     }
   }
 }
@@ -224,16 +207,6 @@ assert(true, nfaDesign2.isAccepts('aaa'))
 assert(false, nfaDesign2.isAccepts('aaaaa'))
 assert(true, nfaDesign2.isAccepts('aaaaaa'))
 assert(false, nfaDesign2.isAccepts('aaaaaaa'))
-
-assert(true, isSubset(Immutable.Set([1, 2, 3]), Immutable.Set([1])))
-assert(false, isSubset(Immutable.Set([1, 2, 3]), Immutable.Set([4])))
-assert(true, isSubset(Immutable.Set([1, 2]), Immutable.Set([1, 2])))
-assert(true, isSubset(Immutable.Set([1, 2, 3]), Immutable.Set([1, 3])))
-assert(false, isSubset(Immutable.Set([1]), Immutable.Set([1, 2])))
-assert(true, isSubset(Immutable.Set([1]), Immutable.Set([])))
-assert(true, isSubset(Immutable.Set(), Immutable.Set()))
-assert(true, isSubset(Immutable.Set([1, 2, 3]), Immutable.Set([1, 2, 3])))
-assert(false, isSubset(Immutable.Set([]), Immutable.Set([1, 2, 3])))
 */
 
 part("Simulation")
@@ -260,10 +233,12 @@ console.log(simulation.nextStates(Immutable.Set([3, 2]), 'b').toJSON()) // #<Set
 console.log(simulation.nextStates(Immutable.Set([1, 3, 2]), 'b').toJSON()) // #<Set: {1, 3, 2}>
 console.log(simulation.nextStates(Immutable.Set([1, 3, 2]), 'a').toJSON()) // #<Set: {1, 2}>
 
-part("Alphabet")
+part("Alphabet & RulesFor")
 console.log(rulebook3.alphabet())
 console.log(simulation.rulesFor(Immutable.Set([1, 2])))
 console.log(simulation.rulesFor(Immutable.Set([3, 2])))
 
+part("Discover States & Rules")
 const startState = nfaDesign3.toNfa().getCurrentStates()
+console.log(startState)
 console.log(simulation.discoverStatesAndRules(Immutable.Set([startState])))
