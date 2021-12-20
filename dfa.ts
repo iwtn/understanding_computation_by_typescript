@@ -1,12 +1,14 @@
+import * as Immutable from 'immutable';
+
 class FARule {
-  constructor(private state: number, private character: string, private next_tate: number) {
+  constructor(private state: any, private character: string, private next_tate: any) {
   }
 
-  appliesTo(state: number, character: string): boolean {
+  appliesTo(state: any, character: string): boolean {
     return (this.state == state && this.character == character)
   }
 
-  follow(): number {
+  follow(): any {
     return this.next_tate
   }
 
@@ -15,15 +17,15 @@ class FARule {
   }
 }
 
-class DFARulebook {
+export class DFARulebook {
   constructor(private rules: FARule[]) {
   }
 
-  nextState(state: number, character: string): number {
+  nextState(state: any, character: string): any {
     return this.ruleFor(state, character).follow()
   }
 
-  ruleFor(state: number, character: string): FARule {
+  ruleFor(state: any, character: string): FARule {
     for (const rule of this.rules) {
       if (rule.appliesTo(state, character)) {
         return rule
@@ -46,7 +48,7 @@ console.log(rulebook.nextState(1, 'b'))
 console.log(rulebook.nextState(2, 'b'))
 
 class DFA {
-  constructor(private currentState: number, private acceptStates: number[], private ruleBook: DFARulebook) {
+  constructor(private currentState: any, private acceptStates: Immutable.Set<any>, private ruleBook: DFARulebook) {
   }
 
   isAccepting(): boolean {
@@ -69,7 +71,7 @@ class DFA {
   }
 }
 
-let dfa = new DFA(1, [3], rulebook)
+let dfa = new DFA(1, Immutable.Set([3]), rulebook)
 console.log(dfa.isAccepting())
 dfa.readCharacter('b')
 console.log(dfa.isAccepting())
@@ -80,12 +82,12 @@ console.log(dfa.isAccepting())
 dfa.readCharacter('b')
 console.log(dfa.isAccepting())
 
-dfa = new DFA(1, [3], rulebook)
+dfa = new DFA(1, Immutable.Set([3]), rulebook)
 dfa.readString('baaab')
 console.log(dfa.isAccepting())
 
-class DFADesign {
-  constructor(private startState: number, private acceptStates: number[], private rulebook: DFARulebook) {
+export class DFADesign {
+  constructor(private startState: any, private acceptStates: Immutable.Set<any>, private rulebook: DFARulebook) {
   }
 
   toDfa(): DFA {
@@ -99,7 +101,7 @@ class DFADesign {
   }
 }
 
-const dd = new DFADesign(1, [3], rulebook)
+const dd = new DFADesign(1, Immutable.Set([3]), rulebook)
 console.log(dd.isAccepts('a'))
 console.log(dd.isAccepts('baa'))
 console.log(dd.isAccepts('baba'))
