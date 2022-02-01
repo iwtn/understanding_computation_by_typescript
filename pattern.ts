@@ -1,4 +1,4 @@
-import { assert, part } from './test'
+import { assert, part } from './mytst'
 import { FARule, NFADesign, NFARulebook } from './nfa';
 import * as Immutable from 'immutable';
 
