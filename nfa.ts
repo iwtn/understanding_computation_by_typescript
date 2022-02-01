@@ -70,7 +70,7 @@ export class NFARulebook {
   }
 }
 
-class NFA {
+export class NFA {
   constructor(private currentStates: Immutable.Set<any>, private acceptStates: Immutable.Set<any>, private ruleBook: NFARulebook) {
   }
 
@@ -153,61 +153,6 @@ class NFASimulation {
     }
   }
 }
-
-/*
-const rulebook: NFARulebook = new NFARulebook([
-   new FARule(1, 'a', 1),
-   new FARule(1, 'b', 1),
-   new FARule(1, 'b', 2),
-   new FARule(2, 'a', 3),
-   new FARule(2, 'b', 3),
-   new FARule(3, 'a', 4),
-   new FARule(3, 'b', 4)
- ])
-console.log(rulebook)
-console.log(rulebook.nextStates(Immutable.Set([1]), 'b').toJSON())
-console.log(rulebook.nextStates(Immutable.Set([1, 2]), 'a').toJSON())
-console.log(rulebook.nextStates(Immutable.Set([1, 3]), 'b').toJSON())
-
-
-part("NFA")
-const nfa = new NFA(Immutable.Set([1]), Immutable.Set([4]), rulebook)
-assert(false, nfa.isAccepting())
-nfa.readCharacter('b')
-assert(false, nfa.isAccepting())
-nfa.readCharacter('a')
-assert(false, nfa.isAccepting())
-nfa.readCharacter('b')
-assert(true, nfa.isAccepting())
-
-const nfa2 = new NFA(Immutable.Set([1]), Immutable.Set([4]), rulebook)
-assert(false, nfa2.isAccepting())
-nfa2.readString('bbbbb')
-assert(true, nfa2.isAccepting())
-
-part("NFADesign")
-const nfaDesign = new NFADesign(1, Immutable.Set([4]), rulebook)
-assert(true, nfaDesign.isAccepts('bab'))
-assert(true, nfaDesign.isAccepts('bbbbb'))
-assert(false, nfaDesign.isAccepts('bbabb'))
-
-part("NFADesign with Free Move")
-const rulebookWithFree = new NFARulebook([
-  new FARule(1, null, 2),
-  new FARule(2, 'a',  3),
-  new FARule(3, 'a',  2),
-  new FARule(4, 'a',  5),
-  new FARule(5, 'a',  6),
-  new FARule(6, 'a',  4),
-  new FARule(1, null, 4)
-])
-const nfaDesign2 = new NFADesign(1, Immutable.Set([2, 4]), rulebookWithFree)
-assert(true, nfaDesign2.isAccepts('aa'))
-assert(true, nfaDesign2.isAccepts('aaa'))
-assert(false, nfaDesign2.isAccepts('aaaaa'))
-assert(true, nfaDesign2.isAccepts('aaaaaa'))
-assert(false, nfaDesign2.isAccepts('aaaaaaa'))
-*/
 
 part("Simulation")
 const rulebook3: NFARulebook = new NFARulebook([
