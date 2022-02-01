@@ -34,16 +34,7 @@ export class DFARulebook {
   }
 }
 
-const rulebook = new DFARulebook([
-  new FARule(1, 'a', 2),
-  new FARule(1, 'b', 1),
-  new FARule(2, 'a', 2),
-  new FARule(2, 'b', 3),
-  new FARule(3, 'a', 3),
-  new FARule(3, 'b', 3)
-])
-
-class DFA {
+export class DFA {
   constructor(private currentState: any, private acceptStates: Immutable.Set<any>, private ruleBook: DFARulebook) {
   }
 
@@ -57,7 +48,7 @@ class DFA {
   }
 
   readCharacter(character: string): void {
-    this.currentState = rulebook.nextState(this.currentState, character)
+    this.currentState = this.ruleBook.nextState(this.currentState, character)
   }
 
   readString(characters: string): void {
@@ -66,21 +57,6 @@ class DFA {
     }
   }
 }
-
-let dfa = new DFA(1, Immutable.Set([3]), rulebook)
-console.log(dfa.isAccepting())
-dfa.readCharacter('b')
-console.log(dfa.isAccepting())
-dfa.readCharacter('a')
-dfa.readCharacter('a')
-dfa.readCharacter('a')
-console.log(dfa.isAccepting())
-dfa.readCharacter('b')
-console.log(dfa.isAccepting())
-
-dfa = new DFA(1, Immutable.Set([3]), rulebook)
-dfa.readString('baaab')
-console.log(dfa.isAccepting())
 
 export class DFADesign {
   constructor(private startState: any, private acceptStates: Immutable.Set<any>, private rulebook: DFARulebook) {
@@ -96,8 +72,3 @@ export class DFADesign {
     return dfa.isAccepting()
   }
 }
-
-const dd = new DFADesign(1, Immutable.Set([3]), rulebook)
-console.log(dd.isAccepts('a'))
-console.log(dd.isAccepts('baa'))
-console.log(dd.isAccepts('baba'))
