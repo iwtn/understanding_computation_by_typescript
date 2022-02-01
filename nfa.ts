@@ -153,20 +153,3 @@ export class NFASimulation {
     }
   }
 }
-
-part("Simulation")
-const rulebook3: NFARulebook = new NFARulebook([
-   new FARule(1, 'a', 1),
-   new FARule(1, 'a', 2),
-   new FARule(1, null, 2),
-   new FARule(2, 'b', 3),
-   new FARule(3, 'b', 1),
-   new FARule(3, null, 2),
-])
-const nfaDesign3 = new NFADesign(1, Immutable.Set([3]), rulebook3)
-const simulation = new NFASimulation(nfaDesign3)
-
-part("Discover States & Rules")
-const startState = nfaDesign3.toNfa().getCurrentStates()
-console.log(startState)
-console.log(simulation.discoverStatesAndRules(Immutable.Set([startState])))

@@ -94,7 +94,7 @@ test('NFARulebook.alphabet', () => {
   expect(rulebookWithSim.alphabet()).toStrictEqual(Immutable.Set(['a', 'b']));
 })
 
-test('Simulation.rulesFor', () => {
+test('NFASimulation.rulesFor', () => {
   const nfaDesign = new NFADesign(1, Immutable.Set([3]), rulebookWithSim)
   const simulation = new NFASimulation(nfaDesign)
 
@@ -106,4 +106,30 @@ test('Simulation.rulesFor', () => {
      new FARule(Immutable.Set([3, 2]), 'a', Immutable.Set([])),
      new FARule(Immutable.Set([3, 2]), 'b', Immutable.Set([1, 3, 2]))
   ]);
+})
+
+test('NFASimulation.discoverStatesAndRules', () => {
+  const nfaDesign = new NFADesign(1, Immutable.Set([3]), rulebookWithSim)
+  const startState = nfaDesign.toNfa().getCurrentStates()
+  expect(startState).toStrictEqual(Immutable.Set([1, 2]))
+
+  const simulation = new NFASimulation(nfaDesign)
+  expect(simulation.discoverStatesAndRules(Immutable.Set([startState]))).toStrictEqual([
+    Immutable.Set([
+      Immutable.Set([1, 2]),
+      Immutable.Set([3, 2]),
+      Immutable.Set([]),
+      Immutable.Set([1, 3, 2])
+    ]),
+    [
+       new FARule(Immutable.Set([1, 2]), 'a', Immutable.Set([1, 2])),
+       new FARule(Immutable.Set([1, 2]), 'b', Immutable.Set([3, 2])),
+       new FARule(Immutable.Set([3, 2]), 'a', Immutable.Set([])),
+       new FARule(Immutable.Set([3, 2]), 'b', Immutable.Set([1, 3, 2])),
+       new FARule(Immutable.Set([]), 'a', Immutable.Set([])),
+       new FARule(Immutable.Set([]), 'b', Immutable.Set([])),
+       new FARule(Immutable.Set([1, 3, 2]), 'a', Immutable.Set([1, 2])),
+       new FARule(Immutable.Set([1, 3, 2]), 'b', Immutable.Set([1, 3, 2]))
+    ]
+  ])
 })
