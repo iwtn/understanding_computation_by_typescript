@@ -4,7 +4,7 @@
   "description": "計算機と一体化する",
   "main": "index.js",
   "scripts": {
-    "test": "test"
+    "test": "jest"
   },
   "author": "iwtn",
   "license": "ISC",

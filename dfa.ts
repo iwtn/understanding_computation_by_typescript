@@ -1,6 +1,6 @@
 import * as Immutable from 'immutable';
 
-class FARule {
+export class FARule {
   constructor(private state: any, private character: string, private next_tate: any) {
   }
 
@@ -42,10 +42,6 @@ const rulebook = new DFARulebook([
   new FARule(3, 'a', 3),
   new FARule(3, 'b', 3)
 ])
-console.log(rulebook)
-console.log(rulebook.nextState(1, 'a'))
-console.log(rulebook.nextState(1, 'b'))
-console.log(rulebook.nextState(2, 'b'))
 
 class DFA {
   constructor(private currentState: any, private acceptStates: Immutable.Set<any>, private ruleBook: DFARulebook) {
