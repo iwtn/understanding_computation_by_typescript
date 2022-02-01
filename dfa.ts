@@ -1,21 +1,5 @@
 import * as Immutable from 'immutable';
-
-export class FARule {
-  constructor(private state: any, private character: string, private next_tate: any) {
-  }
-
-  appliesTo(state: any, character: string): boolean {
-    return (this.state == state && this.character == character)
-  }
-
-  follow(): any {
-    return this.next_tate
-  }
-
-  inspect(): string {
-    return `#<FARule ${this.state} --${this.character}--> ${this.next_tate}>`
-  }
-}
+import { FARule } from './farule';
 
 export class DFARulebook {
   constructor(private rules: FARule[]) {

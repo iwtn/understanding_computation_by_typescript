@@ -1,5 +1,6 @@
 import { assert, part } from './mytst'
-import { FARule, NFADesign, NFARulebook } from './nfa';
+import { FARule } from './farule';
+import { NFADesign, NFARulebook } from './nfa';
 import * as Immutable from 'immutable';
 
 class Pattern {

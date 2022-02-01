@@ -1,26 +1,7 @@
 import { assert, part } from './mytst'
 import * as Immutable from 'immutable';
-
-export class FARule {
-  constructor(private state: any, private character: string, private nextState: any) {
-  }
-
-  appliesTo(state: any, character: string): boolean {
-    return (this.state == state && this.character == character)
-  }
-
-  getCharacter(): string {
-    return this.character
-  }
-
-  follow(): any {
-    return this.nextState
-  }
-
-  inspect(): string {
-    return `#<FARule ${this.state} --${this.character}--> ${this.nextState}>`
-  }
-}
+import { FARule } from './farule';
+import { DFADesign, DFARulebook } from './dfa';
 
 export class NFARulebook {
   constructor(public rules: FARule[]) {
@@ -151,5 +132,19 @@ export class NFASimulation {
     } else {
       return this.discoverStatesAndRules(Immutable.Set(states.toArray().concat(moreStates.toArray())))
     }
+  }
+
+  toDFADesigin(): DFADesign {
+    const startState = this.nfaDesign.toNfa().getCurrentStates()
+    const result = this.discoverStatesAndRules(Immutable.Set([startState]))
+    const states = result[0]
+    const rules = result[1]
+    let acceptStates = Immutable.Set([])
+    for (const state of states) {
+      if (this.nfaDesign.toNfa(state).isAccepting) {
+        acceptStates.add(state)
+      }
+    }
+    return new DFADesign(startState, acceptStates, new DFARulebook(rules))
   }
 }

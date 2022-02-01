@@ -1,5 +1,6 @@
 import * as Immutable from 'immutable';
-import { NFARulebook, FARule, NFA, NFADesign, NFASimulation } from './nfa';
+import { FARule } from './farule';
+import { NFARulebook, NFA, NFADesign, NFASimulation } from './nfa';
 
 const rulebook: NFARulebook = new NFARulebook([
    new FARule(1, 'a', 1),
@@ -132,4 +133,15 @@ test('NFASimulation.discoverStatesAndRules', () => {
        new FARule(Immutable.Set([1, 3, 2]), 'b', Immutable.Set([1, 3, 2]))
     ]
   ])
+})
+
+test('NFASimulation.toDFADesigin', () => {
+  const nfaDesign = new NFADesign(1, Immutable.Set([3]), rulebookWithSim)
+  const simulation = new NFASimulation(nfaDesign)
+
+  const dfaDesign = simulation.toDFADesigin()
+
+  expect(dfaDesign.isAccepts('aaa')).toBe(false)
+  expect(dfaDesign.isAccepts('aab')).toBe(true)
+  expect(dfaDesign.isAccepts('bbbabb')).toBe(true)
 })

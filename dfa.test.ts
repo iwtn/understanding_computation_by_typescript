@@ -1,5 +1,6 @@
 import * as Immutable from 'immutable';
-import { DFARulebook, FARule, DFA, DFADesign } from './dfa';
+import { FARule } from './farule';
+import { DFARulebook, DFA, DFADesign } from './dfa';
 
 const rulebook = new DFARulebook([
   new FARule(1, 'a', 2),
