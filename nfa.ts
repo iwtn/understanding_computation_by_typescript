@@ -58,7 +58,7 @@ export class NFARulebook {
     }
   }
 
-  alphabet(): string[] {
+  alphabet(): Immutable.Set<any> {
     const array = this.rules.map(rule => rule.getCharacter())
     let charas = Immutable.Set([])
     for(const item of array) {
@@ -66,7 +66,7 @@ export class NFARulebook {
         charas = charas.add(item)
       }
     }
-    return charas.toArray()
+    return Immutable.Set(charas.toArray())
   }
 }
 
@@ -116,7 +116,7 @@ export class NFADesign {
 }
 
 
-class NFASimulation {
+export class NFASimulation {
   constructor(private nfaDesign: NFADesign) {
   }
 
@@ -163,25 +163,8 @@ const rulebook3: NFARulebook = new NFARulebook([
    new FARule(3, 'b', 1),
    new FARule(3, null, 2),
 ])
-console.log(rulebook3)
 const nfaDesign3 = new NFADesign(1, Immutable.Set([3]), rulebook3)
-console.log(nfaDesign3)
-console.log(nfaDesign3.toNfa().getCurrentStates().toJSON())
-console.log(nfaDesign3.toNfa(Immutable.Set([2])).getCurrentStates().toJSON())
-console.log(nfaDesign3.toNfa(Immutable.Set([3])).getCurrentStates().toJSON())
-
 const simulation = new NFASimulation(nfaDesign3)
-console.log(simulation)
-console.log(simulation.nextStates(Immutable.Set([1, 2]), 'a').toJSON()) // #<Set: {1, 2}>
-console.log(simulation.nextStates(Immutable.Set([1, 2]), 'b').toJSON()) // #<Set: {3, 2}>
-console.log(simulation.nextStates(Immutable.Set([3, 2]), 'b').toJSON()) // #<Set: {1, 3, 2}>
-console.log(simulation.nextStates(Immutable.Set([1, 3, 2]), 'b').toJSON()) // #<Set: {1, 3, 2}>
-console.log(simulation.nextStates(Immutable.Set([1, 3, 2]), 'a').toJSON()) // #<Set: {1, 2}>
-
-part("Alphabet & RulesFor")
-console.log(rulebook3.alphabet())
-console.log(simulation.rulesFor(Immutable.Set([1, 2])))
-console.log(simulation.rulesFor(Immutable.Set([3, 2])))
 
 part("Discover States & Rules")
 const startState = nfaDesign3.toNfa().getCurrentStates()

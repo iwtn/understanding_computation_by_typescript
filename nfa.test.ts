@@ -1,5 +1,5 @@
 import * as Immutable from 'immutable';
-import { NFARulebook, FARule, NFA, NFADesign } from './nfa';
+import { NFARulebook, FARule, NFA, NFADesign, NFASimulation } from './nfa';
 
 const rulebook: NFARulebook = new NFARulebook([
    new FARule(1, 'a', 1),
@@ -61,4 +61,49 @@ test('NFADesign with Free Move', () => {
   expect(nfaDesign.isAccepts('aaaaa')).toBe(false);
   expect(nfaDesign.isAccepts('aaaaaa')).toBe(true);
   expect(nfaDesign.isAccepts('aaaaaaa')).toBe(false);
+})
+
+const rulebookWithSim: NFARulebook = new NFARulebook([
+   new FARule(1, 'a', 1),
+   new FARule(1, 'a', 2),
+   new FARule(1, null, 2),
+   new FARule(2, 'b', 3),
+   new FARule(3, 'b', 1),
+   new FARule(3, null, 2),
+])
+
+test('NFASimulation', () => {
+  const nfaDesign = new NFADesign(1, Immutable.Set([3]), rulebookWithSim)
+  expect(nfaDesign.toNfa().getCurrentStates()).toStrictEqual(Immutable.Set([1, 2]));
+  expect(nfaDesign.toNfa(Immutable.Set([2])).getCurrentStates()).toStrictEqual(Immutable.Set([2]));
+  expect(nfaDesign.toNfa(Immutable.Set([3])).getCurrentStates()).toStrictEqual(Immutable.Set([2, 3]));
+})
+
+test('NFASimulation', () => {
+  const nfaDesign = new NFADesign(1, Immutable.Set([3]), rulebookWithSim)
+  const simulation = new NFASimulation(nfaDesign)
+
+  expect(simulation.nextStates(Immutable.Set([1, 2]), 'a')).toStrictEqual(Immutable.Set([1, 2]));
+  expect(simulation.nextStates(Immutable.Set([1, 2]), 'b')).toStrictEqual(Immutable.Set([3, 2]));
+  expect(simulation.nextStates(Immutable.Set([3, 2]), 'b')).toStrictEqual(Immutable.Set([3, 2, 1]));
+  expect(simulation.nextStates(Immutable.Set([1, 3, 2]), 'b')).toStrictEqual(Immutable.Set([3, 2, 1]));
+  expect(simulation.nextStates(Immutable.Set([1, 3, 2]), 'a')).toStrictEqual(Immutable.Set([2, 1]));
+})
+
+test('NFARulebook.alphabet', () => {
+  expect(rulebookWithSim.alphabet()).toStrictEqual(Immutable.Set(['a', 'b']));
+})
+
+test('Simulation.rulesFor', () => {
+  const nfaDesign = new NFADesign(1, Immutable.Set([3]), rulebookWithSim)
+  const simulation = new NFASimulation(nfaDesign)
+
+  expect(simulation.rulesFor(Immutable.Set([1, 2]))).toStrictEqual([
+     new FARule(Immutable.Set([1, 2]), 'a', Immutable.Set([1, 2])),
+     new FARule(Immutable.Set([1, 2]), 'b', Immutable.Set([3, 2]))
+  ]);
+  expect(simulation.rulesFor(Immutable.Set([3, 2]))).toStrictEqual([
+     new FARule(Immutable.Set([3, 2]), 'a', Immutable.Set([])),
+     new FARule(Immutable.Set([3, 2]), 'b', Immutable.Set([1, 3, 2]))
+  ]);
 })
