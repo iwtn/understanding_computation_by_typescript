@@ -139,12 +139,13 @@ export class NFASimulation {
     const result = this.discoverStatesAndRules(Immutable.Set([startState]))
     const states = result[0]
     const rules = result[1]
-    let acceptStates = Immutable.Set([])
+    let ary = []
+
     for (const state of states) {
-      if (this.nfaDesign.toNfa(state).isAccepting) {
-        acceptStates.add(state)
+      if (this.nfaDesign.toNfa(state).isAccepting()) {
+        ary.push(state)
       }
     }
-    return new DFADesign(startState, acceptStates, new DFARulebook(rules))
+    return new DFADesign(startState, Immutable.Set(ary), new DFARulebook(rules))
   }
 }

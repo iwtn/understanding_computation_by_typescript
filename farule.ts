@@ -1,9 +1,15 @@
+import * as Immutable from 'immutable';
+
 export class FARule {
   constructor(private state: any, private character: string, private nextState: any) {
   }
 
   appliesTo(state: any, character: string): boolean {
-    return (this.state == state && this.character == character)
+    if (typeof(state) == 'object' && typeof(this.state) == 'object') {
+      return (this.state.equals(state) && this.character == character)
+    } else {
+      return (this.state == state && this.character == character)
+    }
   }
 
   getCharacter(): string {

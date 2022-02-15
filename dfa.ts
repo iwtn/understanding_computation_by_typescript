@@ -23,9 +23,15 @@ export class DFA {
   }
 
   isAccepting(): boolean {
-    for (const as of this.acceptStates) {
-      if (as == this.currentState) {
-        return true
+    for (const acs of this.acceptStates) {
+      if (typeof(acs) == 'object' && typeof(this.currentState) == 'object') {
+        if (acs.equals(this.currentState)) {
+          return true
+        }
+      } else {
+        if (acs == this.currentState) {
+          return true
+        }
       }
     }
     return false
