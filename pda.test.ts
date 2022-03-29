@@ -41,3 +41,11 @@ test('DPDA', () => {
   expect(conf2.state).toBe(2)
   expect(conf2.stack.top()).toBe('b')
 })
+
+test('followFreeMoves', () => {
+  const conf3 = new PDAConfiguration(2, new Stack(['$']))
+  const conf4 = rulebook.followFreeMoves(conf3)
+
+  expect(conf4.state).toBe(1)
+  expect(conf4.stack.top()).toBe('$')
+})

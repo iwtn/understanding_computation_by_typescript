@@ -9,7 +9,10 @@ export class PDARule<T> {
   constructor(public state: any, public character: string, public nextState: any, public popCharacter: T, public pushCharacters: T[]) {
   }
 
-  appliesTo(configuration: PDAConfiguration<T>, character: string): boolean {
+  appliesTo(configuration: PDAConfiguration<T> | null, character: string): boolean {
+    if (configuration == null) {
+      return false
+    }
     return this.state == configuration.state && this.popCharacter == configuration.stack.top() && this.character == character
   }
 
@@ -31,15 +34,33 @@ export class DPDARulebook<T> {
   constructor(public rules: PDARule<T>[]) {
   }
 
-  nextConfiguration(configuration: PDAConfiguration<T>, character: string): PDAConfiguration<T> {
-    return this.ruleFor(configuration, character).follow(configuration)
+  nextConfiguration(configuration: PDAConfiguration<T> | null, character: string | null): PDAConfiguration<T> | null {
+    const rule = this.ruleFor(configuration, character)
+    if (rule == null) {
+      return null
+    } else {
+      return rule.follow(configuration)
+    }
   }
 
-  ruleFor(configuration: PDAConfiguration<T>, character: string): PDARule<T> {
+  ruleFor(configuration: PDAConfiguration<T> | null, character: string): (PDARule<T> | null) {
     for(const rule of this.rules) {
       if (rule.appliesTo(configuration, character)) {
         return rule
       }
+    }
+    return null
+  }
+
+  isAppliesTo(configuration: PDAConfiguration<T>, character: string): boolean {
+    return !(this.ruleFor(configuration, character) == null)
+  }
+
+  followFreeMoves(configuration: PDAConfiguration<T> | null): PDAConfiguration<T> {
+    if (this.isAppliesTo(configuration, null)) {
+      return this.followFreeMoves(this.nextConfiguration(configuration, null))
+    } else {
+      return configuration
     }
   }
 }
