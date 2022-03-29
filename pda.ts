@@ -66,12 +66,16 @@ export class DPDARulebook<T> {
 }
 
 export class DPDA<T> {
-  constructor(public currentConfiguration: PDAConfiguration<T>, public acceptStates: any[], public rulebook: DPDARulebook<T>) {
+  constructor(private currentConfig: PDAConfiguration<T>, public acceptStates: any[], public rulebook: DPDARulebook<T>) {
+  }
+
+  currentConfiguration(): PDAConfiguration<T> {
+    return this.rulebook.followFreeMoves(this.currentConfig)
   }
 
   isAccepting(): boolean {
     for(const state of this.acceptStates) {
-      if (state == this.currentConfiguration.state) {
+      if (state == this.currentConfiguration().state) {
         return true
       }
     }
@@ -79,7 +83,7 @@ export class DPDA<T> {
   }
 
   readCharacter(character: string): void {
-    this.currentConfiguration = this.rulebook.nextConfiguration(this.currentConfiguration, character)
+    this.currentConfig = this.rulebook.nextConfiguration(this.currentConfiguration(), character)
   }
 
   readString(characters: string): void {
