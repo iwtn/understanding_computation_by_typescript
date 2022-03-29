@@ -1,5 +1,5 @@
 import { Stack } from './stack'
-import { PDARule, PDAConfiguration, DPDARulebook } from './pda'
+import { PDARule, PDAConfiguration, DPDARulebook, DPDA } from './pda'
 
 test('PDARule', () => {
   const rule = new PDARule<string>(1, '(', 2, '$', ['b', '$'])
@@ -28,4 +28,16 @@ test('PDAConfiguration', () => {
 
   const conf4 = rulebook.nextConfiguration(conf3, ')')
   expect(conf4.stack.top()).toBe('b')
+})
+
+test('DPDA', () => {
+  const dpda = new DPDA<string>(new PDAConfiguration<string>(1, new Stack(['$'])), [1], rulebook)
+  expect(dpda.isAccepting()).toBe(true)
+
+  dpda.readString('(()');
+  expect(dpda.isAccepting()).toBe(false)
+
+  const conf2 = dpda.currentConfiguration
+  expect(conf2.state).toBe(2)
+  expect(conf2.stack.top()).toBe('b')
 })
