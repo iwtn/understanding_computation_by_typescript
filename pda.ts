@@ -92,3 +92,20 @@ export class DPDA<T> {
     }
   }
 }
+
+export class DPDADesign<T> {
+  constructor(public startState: any, public bottomCharacter: T, public acceptStates: any[], public rulebook: DPDARulebook<T>) {
+  }
+
+  isAccepts?(characters: string): boolean {
+    const dpda = this.toDpda()
+    dpda.readString(characters)
+    return dpda.isAccepting()
+  }
+
+  toDpda(): DPDA<T> {
+    const startStack = new Stack<T>([this.bottomCharacter])
+    const startConfiguration = new PDAConfiguration<T>(this.startState, startStack)
+    return new DPDA<T>(startConfiguration, this.acceptStates, this.rulebook)
+  }
+}

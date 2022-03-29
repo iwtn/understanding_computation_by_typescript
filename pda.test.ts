@@ -1,5 +1,5 @@
 import { Stack } from './stack'
-import { PDARule, PDAConfiguration, DPDARulebook, DPDA } from './pda'
+import { PDARule, PDAConfiguration, DPDARulebook, DPDA, DPDADesign } from './pda'
 
 test('PDARule', () => {
   const rule = new PDARule<string>(1, '(', 2, '$', ['b', '$'])
@@ -65,4 +65,12 @@ test('DPDA with followFreeMoves', () => {
   const conf6 = dpda2.currentConfiguration()
   expect(conf6.state).toBe(1)
   expect(conf6.stack.top()).toBe('$')
+})
+
+test('DPDADesign', () => {
+  const dpdaDesign = new DPDADesign<string>(1, '$', [1], rulebook)
+  expect(dpdaDesign.isAccepts('(((((((((())))))))))')).toBe(true)
+  expect(dpdaDesign.isAccepts('()(())((()))(()(()))')).toBe(true)
+  expect(dpdaDesign.isAccepts('(()(()(()()(()()))()')).toBe(false)
+  expect(dpdaDesign.isAccepts('()(())(((()))(()(()))')).toBe(false)
 })
