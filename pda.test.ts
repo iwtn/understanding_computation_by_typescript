@@ -73,4 +73,5 @@ test('DPDADesign', () => {
   expect(dpdaDesign.isAccepts('()(())((()))(()(()))')).toBe(true)
   expect(dpdaDesign.isAccepts('(()(()(()()(()()))()')).toBe(false)
   expect(dpdaDesign.isAccepts('()(())(((()))(()(()))')).toBe(false)
+  expect(dpdaDesign.isAccepts('())')).toBe(false)
 })

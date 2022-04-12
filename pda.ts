@@ -74,9 +74,12 @@ export class DPDA<T> {
   }
 
   isAccepting(): boolean {
-    for(const state of this.acceptStates) {
-      if (state == this.currentConfiguration().state) {
-        return true
+    const conf = this.currentConfiguration()
+    if (conf) {
+      for(const state of this.acceptStates) {
+        if (state == conf.state) {
+          return true
+        }
       }
     }
     return false

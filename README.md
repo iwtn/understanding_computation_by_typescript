@@ -15,3 +15,8 @@ $ npx ts-node
 $ npx ts-node-script 1/value.ts
 ```
 
+### テスト実行
+```bash
+$ npm test [file]
+```
+
