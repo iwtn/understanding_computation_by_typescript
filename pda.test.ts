@@ -75,3 +75,43 @@ test('DPDADesign', () => {
   expect(dpdaDesign.isAccepts('()(())(((()))(()(()))')).toBe(false)
   expect(dpdaDesign.isAccepts('())')).toBe(false)
 })
+
+const rulebook2 = new DPDARulebook([
+  new PDARule(1, 'a', 2, '$', ['a', '$']),
+  new PDARule(1, 'b', 2, '$', ['b', '$']),
+  new PDARule(2, 'a', 2, 'a', ['a', 'a']),
+  new PDARule(2, 'b', 2, 'b', ['b', 'b']),
+  new PDARule(2, 'a', 2, 'b', []),
+  new PDARule(2, 'b', 2, 'a', []),
+  new PDARule(2, null, 1, '$', ['$'])
+])
+
+test('DPDADesign with a and b', () => {
+  const dpdaDesign2 = new DPDADesign<string>(1, '$', [1], rulebook2)
+  expect(dpdaDesign2.isAccepts('ababab')).toBe(true)
+  expect(dpdaDesign2.isAccepts('bbbaaaab')).toBe(true)
+  expect(dpdaDesign2.isAccepts('baa')).toBe(false)
+})
+
+const rulebook3 = new DPDARulebook([
+  new PDARule(1, 'a', 1, '$', ['a', '$']),
+  new PDARule(1, 'a', 1, 'a', ['a', 'a']),
+  new PDARule(1, 'a', 1, 'b', ['a', 'b']),
+  new PDARule(1, 'b', 1, '$', ['b', '$']),
+  new PDARule(1, 'b', 1, 'a', ['b', 'a']),
+  new PDARule(1, 'b', 1, 'b', ['b', 'b']),
+  new PDARule(1, 'm', 2, '$', ['$']),
+  new PDARule(1, 'm', 2, 'a', ['a']),
+  new PDARule(1, 'm', 2, 'b', ['b']),
+  new PDARule(2, 'a', 2, 'a', []),
+  new PDARule(2, 'b', 2, 'b', []),
+  new PDARule(2, null, 3, '$', ['$'])
+])
+
+test('DPDADesign with circular notice', () => {
+  const dpdaDesign3 = new DPDADesign<string>(1, '$', [3], rulebook3)
+  expect(dpdaDesign3.isAccepts('abmba')).toBe(true)
+  expect(dpdaDesign3.isAccepts('babbamabbab')).toBe(true)
+  expect(dpdaDesign3.isAccepts('abmb')).toBe(false)
+  expect(dpdaDesign3.isAccepts('baambaa')).toBe(false)
+})
