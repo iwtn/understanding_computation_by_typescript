@@ -1,7 +1,16 @@
 import { Stack } from './stack'
 
+const STUCK_STATE = {}
 export class PDAConfiguration<T> {
   constructor(public state: any, public stack: Stack<T>) {
+  }
+
+  stuck(): PDAConfiguration<T> {
+    return new PDAConfiguration(STUCK_STATE, this.stack)
+  }
+
+  isStuck(): boolean {
+    return this.state == STUCK_STATE
   }
 }
 
@@ -69,29 +78,40 @@ export class DPDA<T> {
   constructor(private currentConfig: PDAConfiguration<T>, public acceptStates: any[], public rulebook: DPDARulebook<T>) {
   }
 
+  nextConfiguration(character: string): PDAConfiguration<T> | null {
+    if (this.rulebook.isAppliesTo(this.currentConfiguration(), character)) {
+      return this.rulebook.nextConfiguration(this.currentConfiguration(), character)
+    } else {
+      return this.currentConfiguration().stuck()
+    }
+  }
+
+  isStuck(): boolean {
+    return this.currentConfiguration().isStuck()
+  }
+
   currentConfiguration(): PDAConfiguration<T> {
     return this.rulebook.followFreeMoves(this.currentConfig)
   }
 
   isAccepting(): boolean {
-    const conf = this.currentConfiguration()
-    if (conf) {
-      for(const state of this.acceptStates) {
-        if (state == conf.state) {
-          return true
-        }
+    for(const state of this.acceptStates) {
+      if (state == this.currentConfiguration().state) {
+        return true
       }
     }
     return false
   }
 
   readCharacter(character: string): void {
-    this.currentConfig = this.rulebook.nextConfiguration(this.currentConfiguration(), character)
+    this.currentConfig = this.nextConfiguration(character)
   }
 
   readString(characters: string): void {
     for (const char of characters) {
-      this.readCharacter(char)
+      if (!this.isStuck()) {
+        this.readCharacter(char)
+      }
     }
   }
 }
