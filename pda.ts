@@ -12,6 +12,16 @@ export class PDAConfiguration<T> {
   isStuck(): boolean {
     return this.state == STUCK_STATE
   }
+
+  isSame(conf: PDAConfiguration<T>): boolean {
+    if (this.state != conf.state) {
+      return false
+    }
+    if (!this.stack.isSame(conf.stack)) {
+      return false
+    }
+    return true
+  }
 }
 
 export class PDARule<T> {

@@ -1,3 +1,4 @@
+import * as Immutable from 'immutable';
 import { Stack } from './stack'
 import { PDARule, PDAConfiguration } from './pda'
 import { DPDARulebook } from './dpda'
@@ -28,4 +29,17 @@ test('PDAConfiguration', () => {
 
   const conf4 = rulebook.nextConfiguration(conf3, ')')
   expect(conf4.stack.top()).toBe('b')
+})
+
+test('PDAConfiguration isSame', () => {
+  const conf1 = new PDAConfiguration<string>(1, new Stack(['$']))
+  const conf2 = new PDAConfiguration<string>(1, new Stack(['b', '$']))
+  const conf3 = new PDAConfiguration<string>(2, new Stack(['$']))
+  const conf4 = new PDAConfiguration<string>(2, new Stack([]))
+  const conf5 = new PDAConfiguration<string>(1, new Stack(['$']))
+
+  expect(conf1.isSame(conf2)).toBe(false)
+  expect(conf1.isSame(conf3)).toBe(false)
+  expect(conf1.isSame(conf4)).toBe(false)
+  expect(conf1.isSame(conf5)).toBe(true)
 })
