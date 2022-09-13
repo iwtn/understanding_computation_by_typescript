@@ -1,6 +1,6 @@
 import * as Immutable from 'immutable';
 import { Stack } from './stack'
-import { PDARule, PDAConfiguration } from './pda'
+import { isSubset, PDARule, PDAConfiguration } from './pda'
 import { DPDARulebook } from './dpda'
 
 test('PDARule', () => {
@@ -42,4 +42,19 @@ test('PDAConfiguration isSame', () => {
   expect(conf1.isSame(conf3)).toBe(false)
   expect(conf1.isSame(conf4)).toBe(false)
   expect(conf1.isSame(conf5)).toBe(true)
+})
+
+test('isSubset', () => {
+  const conf1 = new PDAConfiguration<string>(1, new Stack(['$']))
+  const conf2 = new PDAConfiguration<string>(1, new Stack(['b', '$']))
+  const conf5 = new PDAConfiguration<string>(1, new Stack(['$']))
+
+  expect(isSubset([], [])).toBe(true)
+  expect(isSubset([conf1], [])).toBe(true)
+  expect(isSubset([conf5], [conf1])).toBe(true)
+  expect(isSubset([conf5, conf2], [conf1])).toBe(true)
+
+  expect(isSubset([], [conf1])).toBe(false)
+  expect(isSubset([conf2], [conf1])).toBe(false)
+  expect(isSubset([conf5], [conf1, conf2])).toBe(false)
 })

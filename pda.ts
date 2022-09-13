@@ -1,5 +1,20 @@
 import { Stack } from './stack'
 
+export const isSubset = (confs, moreConfs): boolean => {
+  for(const mc of moreConfs) {
+    let isNotExist = true
+    for (const c of confs) {
+      if (mc.isSame(c)) {
+        isNotExist = false
+      }
+    }
+    if (isNotExist) {
+      return false
+    }
+  }
+  return true
+}
+
 const STUCK_STATE = {}
 export class PDAConfiguration<T> {
   constructor(public state: any, public stack: Stack<T>) {
