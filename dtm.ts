@@ -5,4 +5,8 @@ export class Tape {
   inspect(): string {
     return `${this.left}(${this.middle})${this.right}`
   }
+
+  write(character: string): Tape {
+    return new Tape(this.left, character, this.right)
+  }
 }
