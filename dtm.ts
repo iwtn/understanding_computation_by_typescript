@@ -14,4 +14,9 @@ export class Tape {
     const newMiddle = (this.left.length == 0) ? this.blank : this.left[this.left.length - 1]
     return new Tape(this.left.substr(0, this.left.length - 1), newMiddle, this.middle + this.right, this.blank)
   }
+
+  moveHeadRight(): Tape {
+    const newMiddle = (this.right.length == 0) ? this.blank : this.right[0]
+    return new Tape(this.left + this.middle, newMiddle, this.right.substr(1, this.left.length - 1), this.blank)
+  }
 }
