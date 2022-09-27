@@ -46,6 +46,17 @@ test('DPDA with followFreeMoves', () => {
   expect(conf6.stack.top()).toBe('$')
 })
 
+test('DPDA with nextConfiguration', () => {
+  const dpda3 = new DPDA(new PDAConfiguration(1, new Stack(['$'])), [1], rulebook)
+  dpda3.readString('())')
+
+  expect(dpda3.isAccepting()).toBe(false)
+  expect(dpda3.isStuck()).toBe(true)
+
+  const dpdaDesign2 = new DPDADesign<string>(1, '$', [1], rulebook)
+  expect(dpdaDesign2.isAccepts('())')).toBe(false)
+})
+
 test('DPDADesign', () => {
   const dpdaDesign = new DPDADesign<string>(1, '$', [1], rulebook)
   expect(dpdaDesign.isAccepts('(((((((((())))))))))')).toBe(true)
