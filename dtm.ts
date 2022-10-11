@@ -33,4 +33,18 @@ export class TMRule {
   isAppliesTo(configuration: TMConfiguration): boolean {
     return ((this.state == configuration.state) && (this.character == configuration.tape.middle))
   }
+
+  follow(configuration: TMConfiguration): TMConfiguration {
+    return new TMConfiguration(this.nextState, this.nextTape(configuration))
+  }
+
+  nextTape(configuration: TMConfiguration): Tape {
+    const writtenTape = configuration.tape.write(this.writeCharacter)
+
+    if (this.direction == 'right') {
+      return writtenTape.moveHeadRight()
+    } else {
+      return writtenTape.moveHeadLeft()
+    }
+  }
 }

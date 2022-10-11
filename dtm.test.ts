@@ -25,8 +25,14 @@ test('Tape moveHeadRight', () => {
 
 let rule = new TMRule(1, '0', 2, '1', 'right')
 
-test('TMRule', () => {
+test('TMRule isAppliesTo', () => {
   expect(rule.isAppliesTo(new TMConfiguration(1, new Tape('', '0', '', '_')))).toBe(true)
   expect(rule.isAppliesTo(new TMConfiguration(1, new Tape('', '1', '', '_')))).toBe(false)
   expect(rule.isAppliesTo(new TMConfiguration(2, new Tape('', '0', '', '_')))).toBe(false)
+})
+
+test('TMRule follow', () => {
+  const ans = rule.follow(new TMConfiguration(1, new Tape('', '0', '', '_')))
+  expect(ans.state).toBe(2)
+  expect(ans.tape.middle).toBe('_')
 })
