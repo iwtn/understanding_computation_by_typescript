@@ -17,7 +17,7 @@ export class Tape {
 
   moveHeadRight(): Tape {
     const newMiddle = (this.right.length == 0) ? this.blank : this.right[0]
-    return new Tape(this.left + this.middle, newMiddle, this.right.substr(1, this.left.length - 1), this.blank)
+    return new Tape(this.left + this.middle, newMiddle, this.right.substr(1, this.right.length - 1), this.blank)
   }
 }
 
@@ -45,6 +45,23 @@ export class TMRule {
       return writtenTape.moveHeadRight()
     } else {
       return writtenTape.moveHeadLeft()
+    }
+  }
+}
+
+export class DTMRulebook {
+  constructor(private rules: TMRule[]) {
+  }
+
+  nextConfiguration(configuration: TMConfiguration): TMConfiguration {
+    return this.ruleFor(configuration).follow(configuration)
+  }
+
+  ruleFor(configuration: TMConfiguration): TMRule {
+    for (const rule of this.rules) {
+      if (rule.isAppliesTo(configuration)) {
+        return rule
+      }
     }
   }
 }
