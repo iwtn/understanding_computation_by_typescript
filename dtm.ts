@@ -65,3 +65,31 @@ export class DTMRulebook {
     }
   }
 }
+
+export class DTM {
+  constructor(public currentConfiguration: TMConfiguration, private acceptStates: number[], private rulebook: DTMRulebook) {
+  }
+
+  isAccepting(): boolean {
+    for (const state of this.acceptStates) {
+      if (state == this.currentConfiguration.state) {
+        return true
+      }
+    }
+    return false
+  }
+
+  step(): void {
+    this.currentConfiguration = this.rulebook.nextConfiguration(this.currentConfiguration)
+  }
+
+  run(): void {
+    while(1) {
+      if (this.isAccepting()) {
+        break;
+      } else {
+        this.step()
+      }
+    }
+  }
+}

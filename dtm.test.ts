@@ -1,4 +1,4 @@
-import { Tape, TMRule, TMConfiguration, DTMRulebook} from './dtm';
+import { Tape, TMRule, TMConfiguration, DTMRulebook, DTM } from './dtm';
 
 let tape = new Tape('101', '1', '', '_')
 
@@ -23,8 +23,12 @@ test('Tape moveHeadRight', () => {
   expect(tape3.write('0').inspect()).toBe('1011(0)')
 
   const tape4 = new Tape('1', '1', '00', '_')
+
   const tape5 = tape4.moveHeadRight()
   expect(tape5.inspect()).toBe('11(0)0')
+
+  const tape6 = tape5.moveHeadRight()
+  expect(tape6.inspect()).toBe('110(0)')
 })
 
 let rule = new TMRule(1, '0', 2, '1', 'right')
@@ -65,4 +69,23 @@ test('DTMRulebook', () => {
   configuration = rulebook.nextConfiguration(configuration)
   expect(configuration.state).toBe(2)
   expect(configuration.tape.inspect()).toBe('11(0)0')
+})
+
+test('DTM', () => {
+  const tape7 = new Tape('101', '1', '', '_')
+  const dtm = new DTM(new TMConfiguration(1, tape7), [3], rulebook)
+  expect(dtm.currentConfiguration.state).toBe(1)
+  expect(dtm.currentConfiguration.tape.inspect()).toBe('101(1)')
+
+  expect(dtm.isAccepting()).toBe(false)
+
+  dtm.step()
+  expect(dtm.currentConfiguration.state).toBe(1)
+  expect(dtm.currentConfiguration.tape.inspect()).toBe('10(1)0')
+  expect(dtm.isAccepting()).toBe(false)
+
+  dtm.run()
+  expect(dtm.currentConfiguration.state).toBe(3)
+  expect(dtm.currentConfiguration.tape.inspect()).toBe('110(0)_')
+  expect(dtm.isAccepting()).toBe(true)
 })
