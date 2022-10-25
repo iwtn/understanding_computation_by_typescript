@@ -100,3 +100,55 @@ test('DTM with an error', () => {
   expect(dtm2.isAccepting()).toBe(false)
   expect(dtm2.isStuck()).toBe(true)
 })
+
+const rulebook2 = new DTMRulebook([
+  // 状態1: aを探して右にスキャンする
+  new TMRule(1, 'X', 1, 'X', 'right'), // Xをスキップする
+  new TMRule(1, 'a', 2, 'X', 'right'), // aを消して、状態2に進む
+  new TMRule(1, '_', 6, '_', 'left'), // 空白を見つけて、状態6(受理状態)に進む
+
+  // 状態2: bを探して右にスキャンする
+  new TMRule(2, 'a', 2, 'a', 'right'), // aをスキップする
+  new TMRule(2, 'X', 2, 'X', 'right'), // Xをスキップする
+  new TMRule(2, 'b', 3, 'X', 'right'), // bを消して、状態3に進む
+
+  // 状態3: cを探して右にスキャンする
+  new TMRule(3, 'b', 3, 'b', 'right'), // bをスキップする
+  new TMRule(3, 'X', 3, 'X', 'right'), // Xをスキップする
+  new TMRule(3, 'c', 4, 'X', 'right'), // cを消して、状態4に進む
+
+  // 状態4: 文字列の末尾を探して右にスキャンする
+  new TMRule(4, 'c', 4, 'c', 'right'), // cをスキップする
+  new TMRule(4, '_', 5, '_', 'left'), // 空白を見つけて、状態5に進む
+
+  // 状態5: 文字列の先頭を探して左にスキャンする
+  new TMRule(5, 'a', 5, 'a', 'left'), // aをスキップする
+  new TMRule(5, 'b', 5, 'b', 'left'), // bをスキップする
+  new TMRule(5, 'c', 5, 'c', 'left'), // cをスキップする
+  new TMRule(5, 'X', 5, 'X', 'left'), // Xをスキップする
+  new TMRule(5, '_', 1, '_', 'right') // 空白を見つけて、状態1に進む
+])
+
+const tape9 = new Tape('', 'a', 'aabbbccc', '_')
+const dtm3 = new DTM(new TMConfiguration(1, tape9), [6], rulebook2)
+
+test('DTM sample', () => {
+  for(let i = 0; i < 10; i++) {
+    dtm3.step()
+  }
+  expect(dtm3.currentConfiguration.state).toBe(5)
+  expect(dtm3.currentConfiguration.tape.inspect()).toBe('XaaXbbXc(c)_')
+
+  for(let i = 0; i < 25; i++) {
+    dtm3.step()
+  }
+  expect(dtm3.currentConfiguration.state).toBe(5)
+  expect(dtm3.currentConfiguration.tape.inspect()).toBe('_XXa(X)XbXXc_')
+
+  dtm3.run()
+  expect(dtm3.currentConfiguration.state).toBe(6)
+  expect(dtm3.currentConfiguration.tape.inspect()).toBe('_XXXXXXXX(X)_')
+
+  expect(dtm3.isAccepting()).toBe(true)
+  expect(dtm3.isStuck()).toBe(false)
+})
