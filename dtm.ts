@@ -63,6 +63,11 @@ export class DTMRulebook {
         return rule
       }
     }
+    return null
+  }
+
+  isAppliesTo(configuration: TMConfiguration): boolean {
+    return !(this.ruleFor(configuration) == null)
   }
 }
 
@@ -79,13 +84,17 @@ export class DTM {
     return false
   }
 
+  isStuck(): boolean {
+    return !this.isAccepting() && !this.rulebook.isAppliesTo(this.currentConfiguration)
+  }
+
   step(): void {
     this.currentConfiguration = this.rulebook.nextConfiguration(this.currentConfiguration)
   }
 
   run(): void {
     while(1) {
-      if (this.isAccepting()) {
+      if (this.isAccepting() || this.isStuck()) {
         break;
       } else {
         this.step()

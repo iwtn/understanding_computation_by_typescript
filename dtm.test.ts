@@ -89,3 +89,14 @@ test('DTM', () => {
   expect(dtm.currentConfiguration.tape.inspect()).toBe('110(0)_')
   expect(dtm.isAccepting()).toBe(true)
 })
+
+test('DTM with an error', () => {
+  const tape8 = new Tape('121', '1', '', '_')
+  const dtm2 = new DTM(new TMConfiguration(1, tape8), [3], rulebook)
+  dtm2.run()
+
+  expect(dtm2.currentConfiguration.state).toBe(1)
+  expect(dtm2.currentConfiguration.tape.inspect()).toBe('1(2)00')
+  expect(dtm2.isAccepting()).toBe(false)
+  expect(dtm2.isStuck()).toBe(true)
+})
