@@ -152,3 +152,37 @@ test('DTM sample', () => {
   expect(dtm3.isAccepting()).toBe(true)
   expect(dtm3.isStuck()).toBe(false)
 })
+
+
+const rulebook3 = new DTMRulebook([
+  // 状態1: テープから最初の文字を読む
+  new TMRule(1, 'a', 2, 'a', 'right'), // aを覚える
+  new TMRule(1, 'b', 3, 'b', 'right'), // bを覚える
+  new TMRule(1, 'c', 4, 'c', 'right'), // cを覚える
+
+  // 状態:2 文字列の末尾を探して右にスキャンする(aを覚えている)
+  new TMRule(2, 'a', 2, 'a', 'right'), // aをスキップする
+  new TMRule(2, 'b', 2, 'b', 'right'), // bをスキップする
+  new TMRule(2, 'c', 2, 'c', 'right'), // cをスキップする
+  new TMRule(2, '_', 5, 'a', 'right'), // 空白を見つけて、aを書く
+
+  // 状態3: 文字列の末尾を探して右にスキャンする(bを覚えている)
+  new TMRule(3, 'a', 3, 'a', 'right'), // aをスキップする
+  new TMRule(3, 'b', 3, 'b', 'right'), // bをスキップする
+  new TMRule(3, 'c', 3, 'c', 'right'), // cをスキップする
+  new TMRule(3, '_', 5, 'b', 'right'), // 空白を見つけて、bを書く
+
+  // 状態4: 文字列の末尾を探して右にスキャンする(cを覚えている)
+  new TMRule(4, 'a', 4, 'a', 'right'), // aをスキップする
+  new TMRule(4, 'b', 4, 'b', 'right'), // bをスキップする
+  new TMRule(4, 'c', 4, 'c', 'right'), // cをスキップする
+  new TMRule(4, '_', 5, 'c', 'right')  // 空白を見つけて、cを書く
+])
+
+const tape10 = new Tape('', 'b', 'cbca', '_')
+const dtm4 = new DTM(new TMConfiguration(1, tape10), [5], rulebook3)
+
+test('DTM move first character to last', () => {
+  dtm4.run()
+  expect(dtm4.currentConfiguration.tape.inspect()).toBe('bcbcab(_)')
+})
