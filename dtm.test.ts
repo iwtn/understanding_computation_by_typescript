@@ -186,3 +186,30 @@ test('DTM move first character to last', () => {
   dtm4.run()
   expect(dtm4.currentConfiguration.tape.inspect()).toBe('bcbcab(_)')
 })
+
+const incrementRules = (startState: number, returnState: number): TMRule[] => {
+  const incrementing = startState
+  const finishing = 100 + startState
+  const finished = returnState
+  return [
+    new TMRule(incrementing, '0', finishing, '1', 'right'),
+    new TMRule(incrementing, '1', incrementing, '0', 'left'),
+    new TMRule(incrementing, '_', finishing, '1', 'right'),
+    new TMRule(finishing, '0', finishing, '0', 'right'),
+    new TMRule(finishing, '1', finishing, '1', 'right'),
+    new TMRule(finishing, '_', finished, '_', 'left')
+  ]
+}
+
+const rulebook4 = new DTMRulebook(
+  incrementRules(0, 1).concat(incrementRules(1, 2)).concat(incrementRules(2, 3))
+)
+
+test('DTM plus three', () => {
+  expect(rulebook4.rules.length).toBe(18)
+
+  const tape11 = new Tape('101', '1', '', '_')
+  const dtm5 = new DTM(new TMConfiguration(0, tape11), [3], rulebook4)
+  dtm5.run()
+  expect(dtm5.currentConfiguration.tape.inspect()).toBe('111(0)_')
+})

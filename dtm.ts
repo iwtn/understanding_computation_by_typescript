@@ -50,7 +50,7 @@ export class TMRule {
 }
 
 export class DTMRulebook {
-  constructor(private rules: TMRule[]) {
+  constructor(public rules: TMRule[]) {
   }
 
   nextConfiguration(configuration: TMConfiguration): TMConfiguration {
