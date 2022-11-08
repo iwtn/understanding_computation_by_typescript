@@ -32,3 +32,10 @@ test('NUMBER', () => {
   expect(toInteger(fifteen)).toBe(15)
   expect(toInteger(hundred)).toBe(100)
 })
+
+import { TRUE, FALSE, toBoolean} from './lambda';
+
+test('BOOLEAN', () => {
+  expect(toBoolean(TRUE)).toBe(true)
+  expect(toBoolean(FALSE)).toBe(false)
+})
