@@ -13,3 +13,6 @@ export const TRUE  = x => y => x
 export const FALSE = x => y => y
 
 export const toBoolean = proc => proc(true)(false)
+
+// export const IF = b => x => y => b(x)(y)
+export const IF = b => b

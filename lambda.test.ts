@@ -39,3 +39,10 @@ test('BOOLEAN', () => {
   expect(toBoolean(TRUE)).toBe(true)
   expect(toBoolean(FALSE)).toBe(false)
 })
+
+import { IF } from './lambda';
+
+test('IF', () => {
+  expect(IF(TRUE)('happy')('sad')).toBe('happy')
+  expect(IF(FALSE)('happy')('sad')).toBe('sad')
+})
