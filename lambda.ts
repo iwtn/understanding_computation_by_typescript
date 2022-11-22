@@ -18,3 +18,7 @@ export const toBoolean = proc => proc(true)(false)
 export const IF = b => b
 
 export const IS_ZERO = n => n(x => FALSE)(TRUE)
+
+export const PAIR = x => y => f => f(x)(y)
+export const LEFT = p => p(x => y => x)
+export const RIGHT = p => p(x => y => y)

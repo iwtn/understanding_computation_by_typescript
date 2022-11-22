@@ -53,3 +53,11 @@ test('IS_ZERO', () => {
   expect(toBoolean(IS_ZERO(ZERO))).toBe(true)
   expect(toBoolean(IS_ZERO(THREE))).toBe(false)
 })
+
+import { PAIR, LEFT, RIGHT } from './lambda'
+
+test(' PAIR, LEFT, RIGHT', () => {
+  const myPair = PAIR(THREE)(FIVE)
+  expect(toInteger(LEFT(myPair))).toBe(3)
+  expect(toInteger(RIGHT(myPair))).toBe(5)
+})
