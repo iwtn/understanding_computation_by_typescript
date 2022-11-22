@@ -16,3 +16,5 @@ export const toBoolean = proc => proc(true)(false)
 
 // export const IF = b => x => y => b(x)(y)
 export const IF = b => b
+
+export const IS_ZERO = n => n(x => FALSE)(TRUE)

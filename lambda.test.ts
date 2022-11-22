@@ -46,3 +46,10 @@ test('IF', () => {
   expect(IF(TRUE)('happy')('sad')).toBe('happy')
   expect(IF(FALSE)('happy')('sad')).toBe('sad')
 })
+
+import { IS_ZERO } from './lambda';
+
+test('IS_ZERO', () => {
+  expect(toBoolean(IS_ZERO(zero))).toBe(true)
+  expect(toBoolean(IS_ZERO(three))).toBe(false)
+})
