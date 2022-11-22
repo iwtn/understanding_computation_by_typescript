@@ -20,17 +20,17 @@ test('anonymous function type', () => {
   expect(p(5) == q(5)).toBe(true)
 })
 
-import { zero, one, two, three, five, fifteen, hundred, toInteger } from './lambda';
+import { ZERO, ONE, TWO, THREE, FIVE, FIFTEEN, HUNDRED, toInteger } from './lambda';
 
 test('NUMBER', () => {
-  expect(toInteger( zero)).toBe(0)
-  expect(toInteger(  one)).toBe(1)
-  expect(toInteger(  two)).toBe(2)
-  expect(toInteger(three)).toBe(3)
+  expect(toInteger( ZERO)).toBe(0)
+  expect(toInteger(  ONE)).toBe(1)
+  expect(toInteger(  TWO)).toBe(2)
+  expect(toInteger(THREE)).toBe(3)
 
-  expect(toInteger(five)).toBe(5)
-  expect(toInteger(fifteen)).toBe(15)
-  expect(toInteger(hundred)).toBe(100)
+  expect(toInteger(FIVE)).toBe(5)
+  expect(toInteger(FIFTEEN)).toBe(15)
+  expect(toInteger(HUNDRED)).toBe(100)
 })
 
 import { TRUE, FALSE, toBoolean} from './lambda';
@@ -50,6 +50,6 @@ test('IF', () => {
 import { IS_ZERO } from './lambda';
 
 test('IS_ZERO', () => {
-  expect(toBoolean(IS_ZERO(zero))).toBe(true)
-  expect(toBoolean(IS_ZERO(three))).toBe(false)
+  expect(toBoolean(IS_ZERO(ZERO))).toBe(true)
+  expect(toBoolean(IS_ZERO(THREE))).toBe(false)
 })
