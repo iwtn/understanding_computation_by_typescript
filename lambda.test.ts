@@ -56,8 +56,17 @@ test('IS_ZERO', () => {
 
 import { PAIR, LEFT, RIGHT } from './lambda'
 
-test(' PAIR, LEFT, RIGHT', () => {
+test('PAIR, LEFT, RIGHT', () => {
   const myPair = PAIR(THREE)(FIVE)
   expect(toInteger(LEFT(myPair))).toBe(3)
   expect(toInteger(RIGHT(myPair))).toBe(5)
+})
+
+import { SLIDE, DECREMENT } from './lambda'
+
+test('SLIDE, DECREMENT', () => {
+  expect(toInteger(DECREMENT(FIVE))).toBe(4)
+  expect(toInteger(DECREMENT(FIFTEEN))).toBe(14)
+  expect(toInteger(DECREMENT(HUNDRED))).toBe(99)
+  expect(toInteger(DECREMENT(ZERO))).toBe(0)
 })
